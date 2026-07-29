@@ -70,6 +70,11 @@ function getWidget(dom) {
   return { host, root: host?.shadowRoot || null }
 }
 
+function closeDom(dom) {
+  dom.window.AccessibilityPreferenceWidget?.disconnect()
+  dom.window.close()
+}
+
 test('auto-mount exposes a stable API and an initially closed dialog', () => {
   const dom = createDom()
   const { window } = dom
@@ -84,7 +89,7 @@ test('auto-mount exposes a stable API and an initially closed dialog', () => {
     root.getElementById('a11y-widget-trigger').getAttribute('aria-expanded'),
     'false',
   )
-  dom.window.close()
+  closeDom(dom)
 })
 
 test('open and close manage modal state, background inertness, and focus', async () => {
@@ -111,7 +116,7 @@ test('open and close manage modal state, background inertness, and focus', async
   assert.equal(window.document.querySelector('main').hasAttribute('inert'), false)
   assert.equal(root.activeElement, trigger)
   assert.ok(host.isConnected)
-  dom.window.close()
+  closeDom(dom)
 })
 
 test('dynamic content receives active text and image preferences and destroy restores it', async () => {
@@ -146,7 +151,7 @@ test('dynamic content receives active text and image preferences and destroy res
   assert.equal(window.localStorage.getItem('a11y-font-size'), '1')
   assert.equal(window.localStorage.getItem('a11y-hide-images'), 'true')
   assert.equal(getWidget(dom).host, null)
-  dom.window.close()
+  closeDom(dom)
 })
 
 test('route exclusions unmount and remount the widget during SPA navigation', async () => {
@@ -167,7 +172,7 @@ test('route exclusions unmount and remount the widget during SPA navigation', as
   )
   await waitForRuntime(window, 60)
   assert.ok(getWidget(dom).host)
-  dom.window.close()
+  closeDom(dom)
 })
 
 test('manual mount applies placement configuration without duplicate hosts', () => {
@@ -189,7 +194,7 @@ test('manual mount applies placement configuration without duplicate hosts', () 
   assert.equal(hosts[0].dataset.position, 'bottom-left')
   assert.equal(hosts[0].style.getPropertyValue('--a11y-widget-offset-x'), '2rem')
   assert.equal(hosts[0].style.getPropertyValue('--a11y-widget-offset-y'), '3rem')
-  dom.window.close()
+  closeDom(dom)
 })
 
 test('CSP nonce is applied to widget-owned style elements', () => {
@@ -205,7 +210,7 @@ test('CSP nonce is applied to widget-owned style elements', () => {
       .getAttribute('nonce'),
     'test-nonce',
   )
-  dom.window.close()
+  closeDom(dom)
 })
 
 test('reset clears widget preferences except language and restores images', () => {
@@ -223,7 +228,7 @@ test('reset clears widget preferences except language and restores images', () =
   assert.equal(image.style.getPropertyValue('display'), '')
   assert.equal(window.localStorage.getItem('a11y-hide-images'), null)
   assert.equal(window.localStorage.getItem('a11y-lang'), 'en')
-  dom.window.close()
+  closeDom(dom)
 })
 
 test('runtime configuration can update the interface language', () => {
@@ -237,7 +242,7 @@ test('runtime configuration can update the interface language', () => {
     root.getElementById('a11y-title').innerText,
     'ERİŞİLEBİLİRLİK ARAÇLARI',
   )
-  dom.window.close()
+  closeDom(dom)
 })
 
 test('language and profile disclosures are keyboard-native buttons', () => {
@@ -262,7 +267,7 @@ test('language and profile disclosures are keyboard-native buttons', () => {
   assert.equal(profileToggle.getAttribute('aria-expanded'), 'true')
   assert.equal(languageContent.hidden, false)
   assert.equal(profileContent.hidden, false)
-  dom.window.close()
+  closeDom(dom)
 })
 
 test('preference profiles use neutral labels instead of medical safety claims', () => {
@@ -275,7 +280,7 @@ test('preference profiles use neutral labels instead of medical safety claims', 
   assert.ok(labels.includes('Reduced Motion'))
   assert.ok(labels.includes('Readable Typography'))
   assert.doesNotMatch(labels.join(' '), /safe|epilep|disability|impaired/i)
-  dom.window.close()
+  closeDom(dom)
 })
 
 test('skip navigation adds a focusable link without hiding site navigation', () => {
@@ -296,7 +301,7 @@ test('skip navigation adds a focusable link without hiding site navigation', () 
   window.AccessibilityPreferenceWidget.destroy()
   assert.equal(window.document.getElementById('a11y-skip-link'), null)
   assert.equal(main.hasAttribute('tabindex'), false)
-  dom.window.close()
+  closeDom(dom)
 })
 
 test('read-aloud control is disabled when the Web Speech API is unavailable', () => {
@@ -306,7 +311,7 @@ test('read-aloud control is disabled when the Web Speech API is unavailable', ()
 
   assert.equal(button.disabled, true)
   assert.equal(button.getAttribute('aria-disabled'), 'true')
-  dom.window.close()
+  closeDom(dom)
 })
 
 test('mount remains functional when browser storage is unavailable', () => {
@@ -319,5 +324,5 @@ test('mount remains functional when browser storage is unavailable', () => {
     root.getElementById('highlightLinksBtn').getAttribute('aria-pressed'),
     'true',
   )
-  dom.window.close()
+  closeDom(dom)
 })

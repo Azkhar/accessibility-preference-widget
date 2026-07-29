@@ -24,6 +24,7 @@
   let host = null
   let routeObserver = null
   let routeCheckScheduled = false
+  let cancelScheduledRouteCheck = null
   let lastPath = getCurrentPath()
 
   function createSafeStorage() {
@@ -292,8 +293,13 @@
       typeof global.requestAnimationFrame === 'function'
         ? global.requestAnimationFrame
         : callback => global.setTimeout(callback, 0)
+    const cancel =
+      typeof global.cancelAnimationFrame === 'function'
+        ? global.cancelAnimationFrame
+        : global.clearTimeout
 
-    schedule(() => {
+    const handle = schedule(() => {
+      cancelScheduledRouteCheck = null
       routeCheckScheduled = false
       const currentPath = getCurrentPath()
       if (currentPath === lastPath) {
@@ -305,6 +311,7 @@
       else destroy()
       emit('routechange', { path: currentPath })
     })
+    cancelScheduledRouteCheck = () => cancel.call(global, handle)
   }
 
   function startRouteWatcher() {
@@ -326,6 +333,9 @@
 
   function disconnect() {
     destroy()
+    if (cancelScheduledRouteCheck) cancelScheduledRouteCheck()
+    cancelScheduledRouteCheck = null
+    routeCheckScheduled = false
     global.removeEventListener('popstate', scheduleRouteCheck)
     global.removeEventListener('hashchange', scheduleRouteCheck)
     document.removeEventListener(
