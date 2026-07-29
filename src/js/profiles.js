@@ -41,7 +41,7 @@ const PROFILES = [
 
 let ACTIVE_PROFILES = {}
 
-function profiles(root, moduleMethods, registerReset) {
+function profiles(root, moduleMethods, registerReset, runtime = {}) {
   // i18n helper (Scope safe)
   const tr = key => (window.a11yI18n ? window.a11yI18n.t(key) : key)
 
@@ -51,20 +51,29 @@ function profiles(root, moduleMethods, registerReset) {
   // Header Ekle (Collapsible Control ile)
   // Leading Icon Eklendi
   const headerHtml = `
-    <div class="a11y-profiles-header" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
-        <div style="display: flex; align-items: center; gap: 8px;">
+    <button
+      type="button"
+      class="a11y-profiles-header"
+      aria-expanded="false"
+      aria-controls="a11y-profiles-content"
+    >
+        <span class="a11y-disclosure-label">
             <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
             <span>${tr('profilesHeader')}</span>
-        </div>
+        </span>
         <svg class="a11y-profiles-toggle-icon" viewBox="0 0 24 24" width="24" height="24" style="transition: transform 0.3s; transform: rotate(-90deg);"><path d="M7 10l5 5 5-5z"/></svg>
-    </div>`
+    </button>`
 
   // Profil Grid Container
   // Default kapalı (isOpen=false)
   const listHtml = `
     <div class="a11y-profiles-wrapper">
         ${headerHtml}
-        <div class="a11y-profiles-content" style="max-height: 0px; overflow: hidden; transition: max-height 0.3s ease-out;">
+        <div
+          class="a11y-profiles-content"
+          id="a11y-profiles-content"
+          hidden
+        >
             <div class="a11y-profiles-grid"></div>
         </div>
     </div>
@@ -75,24 +84,21 @@ function profiles(root, moduleMethods, registerReset) {
   const contentEl = container.querySelector('.a11y-profiles-content')
   const toggleIcon = container.querySelector('.a11y-profiles-toggle-icon')
 
-  // Collapsible Click Handler
   let isOpen = false
-  headerEl.addEventListener('click', () => {
+  const handleHeaderClick = () => {
     isOpen = !isOpen
-    if (isOpen) {
-      contentEl.style.maxHeight = '600px'
-      toggleIcon.style.transform = 'rotate(0deg)'
-    } else {
-      contentEl.style.maxHeight = '0px'
-      toggleIcon.style.transform = 'rotate(-90deg)'
-    }
-  })
+    headerEl.setAttribute('aria-expanded', String(isOpen))
+    contentEl.hidden = !isOpen
+    toggleIcon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(-90deg)'
+  }
+  headerEl.addEventListener('click', handleHeaderClick)
 
   const grid = container.querySelector('.a11y-profiles-grid')
 
   PROFILES.forEach(profile => {
     // HTML Oluştur (Brutalist Button Yapısı - Custom Class)
     const profileCard = document.createElement('button')
+    profileCard.type = 'button'
     profileCard.className = 'a11y-profile-card'
     profileCard.id = `profile-${profile.id}`
     profileCard.setAttribute('aria-pressed', 'false')
@@ -127,6 +133,12 @@ function profiles(root, moduleMethods, registerReset) {
     })
     localStorage.removeItem('a11y-active-profiles')
   })
+
+  if (runtime.registerCleanup) {
+    runtime.registerCleanup(() => {
+      headerEl.removeEventListener('click', handleHeaderClick)
+    })
+  }
 }
 
 function toggleProfile(profileId, root, moduleMethods) {
@@ -202,68 +214,19 @@ function applyProfileActions(profile, isActive, root, moduleMethods) {
     const btnId = buttonMap[actionKey]
     const handler = moduleMethods[btnId]
 
-    if (!handler) {
-      console.warn(`Handler not found for action: ${actionKey} (${btnId})`)
-      return
+    if (!handler) return
+
+    const targetLevel = isActive
+      ? typeof actionValue === 'number'
+        ? actionValue
+        : 1
+      : 0
+
+    if (typeof handler.setPreference === 'function') {
+      handler.setPreference(
+        typeof actionValue === 'number' ? targetLevel : targetLevel > 0,
+      )
     }
-
-    const host = root.host ? root.host.shadowRoot : root
-    const btn = host.getElementById(btnId)
-    if (!btn) return
-
-    // Mevcut durumu analiz et (shadow dom içinde)
-    // btn zaten host.getElementById ile alındı
-
-    const isBtnActive = btn.classList.contains('active')
-    const hasBars = btn.querySelector('.progress-bars')
-
-    let currentLevel = 0
-    if (hasBars) {
-      // Cycle butonuysa, kaç barın aktif olduğunu say
-      currentLevel = btn.querySelectorAll('.bar.active').length
-      // Bazı modüllerde level 0 ise active class yoktur.
-    } else {
-      // Toggle butonu (1 veya 0)
-      currentLevel = isBtnActive ? 1 : 0
-    }
-
-    // Hedef seviyeyi belirle
-    let targetLevel = 0
-    if (isActive) {
-      // Eğer profil aktifse, hedef level aksiyonun değeri (örn: 2) veya 1 (true ise)
-      targetLevel = typeof actionValue === 'number' ? actionValue : 1
-    } else {
-      // Profil pasifse, hedef level 0 (kapat)
-      targetLevel = 0
-    }
-
-    if (currentLevel === targetLevel) return // Zaten hedefteyiz
-
-    // Hedefe ulaşmak için tıklama simülasyonu
-    let maxTries = 5
-
-    const clickUntilTarget = () => {
-      if (maxTries-- <= 0) return
-
-      // Şimdiki durumu tekrar oku
-      const nowActive = btn.classList.contains('active')
-      let nowLevel = 0
-      if (hasBars) {
-        nowLevel = btn.querySelectorAll('.bar.active').length
-      } else {
-        nowLevel = nowActive ? 1 : 0
-      }
-
-      if (nowLevel === targetLevel) return // Ulaştık
-
-      // Tıkla
-      handler()
-
-      // Hemen tekrar dene (senkron çalıştığı varsayımıyla)
-      clickUntilTarget()
-    }
-
-    clickUntilTarget()
   })
 }
 
@@ -282,7 +245,7 @@ function loadState(root) {
         }
       })
     }
-  } catch (e) {
-    console.error('Profil yükleme hatası', e)
+  } catch {
+    ACTIVE_PROFILES = {}
   }
 }

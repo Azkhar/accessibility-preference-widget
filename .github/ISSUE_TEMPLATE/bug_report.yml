@@ -1,0 +1,37 @@
+name: Bug report
+description: Report a reproducible widget problem
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include credentials, private URLs, customer data, or undisclosed vulnerability details.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Use synthetic public data and include the smallest reproducible example.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Widget version
+  - type: input
+    id: environment
+    attributes:
+      label: Browser, operating system, and assistive technology
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed credentials, private URLs, customer data, and sensitive security details.
+          required: true

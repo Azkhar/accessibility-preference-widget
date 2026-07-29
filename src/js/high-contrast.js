@@ -65,7 +65,6 @@ function highContrast(root, initButton, cycleFeature, registerReset) {
   function setHighContrast(level) {
     // Geçerli bir seviye mi kontrol et
     if (isNaN(level) || level < 0 || level >= modes.length) {
-      console.error('Geçersiz kontrast seviyesi:', level)
       level = 0
     }
 
@@ -90,7 +89,7 @@ function highContrast(root, initButton, cycleFeature, registerReset) {
   function ensureContrastStyle() {
     let styleEl = document.getElementById('a11y-high-contrast-style')
     if (!styleEl) {
-      styleEl = document.createElement('style')
+      styleEl = prepareWidgetStyle(document.createElement('style'))
       styleEl.id = 'a11y-high-contrast-style'
       document.head.appendChild(styleEl)
 
@@ -373,6 +372,7 @@ function highContrast(root, initButton, cycleFeature, registerReset) {
     const nextLevel = (CURRENT_HIGH_CONTRAST_LEVEL + 1) % modes.length
     setHighContrast(nextLevel)
   }
+  handleHighContrast.setPreference = level => setHighContrast(Number(level))
 
   initButton(button, handleHighContrast)
   ensureContrastStyle()

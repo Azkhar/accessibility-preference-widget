@@ -1,20 +1,39 @@
 {
   "name": "accessibility-preference-widget",
-  "version": "1.0.0",
-  "description": "WCAG 2.2-focused accessibility preference widget",
+  "version": "1.1.0",
+  "description": "WCAG 2.2-focused accessibility preference widget for static and single-page applications",
   "main": "dist/widget.js",
   "browser": "dist/widget.min.js",
+  "types": "types/index.d.ts",
+  "unpkg": "dist/widget.min.js",
+  "jsdelivr": "dist/widget.min.js",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "browser": "./dist/widget.min.js",
+      "default": "./dist/widget.js"
+    },
+    "./widget.js": "./dist/widget.js",
+    "./widget.min.js": "./dist/widget.min.js"
+  },
   "files": [
     "dist",
+    "types",
+    "docs",
     "licenses",
     "README.md",
     "LICENSE",
-    "THIRD_PARTY_NOTICES.md"
+    "THIRD_PARTY_NOTICES.md",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "node scripts/build.js",
+    "check": "node scripts/check.js",
     "test": "npm run build && node --test",
-    "prepublishOnly": "npm test"
+    "validate": "npm run check && npm test && npm audit --audit-level=high",
+    "prepare": "npm run build",
+    "prepack": "npm run check && npm test",
+    "prepublishOnly": "npm run check && npm test"
   },
   "keywords": [
     "accessibility",
@@ -28,10 +47,23 @@
     "localstorage"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Azkhar/accessibility-preference-widget.git"
+  },
+  "homepage": "https://github.com/Azkhar/accessibility-preference-widget#readme",
+  "bugs": {
+    "url": "https://github.com/Azkhar/accessibility-preference-widget/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": true,
   "engines": {
     "node": ">=18"
   },
   "devDependencies": {
-    "esbuild": "^0.28.1"
+    "esbuild": "^0.28.1",
+    "jsdom": "^26.1.0"
   }
 }

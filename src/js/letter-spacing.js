@@ -38,7 +38,7 @@ function letterSpacing(root, initButton, cycleFeature, registerReset) {
 
     // Style elementini oluştur veya güncelle
     if (!styleEl) {
-      styleEl = document.createElement('style')
+      styleEl = prepareWidgetStyle(document.createElement('style'))
       styleEl.id = 'a11y-letter-spacing-style'
       document.head.appendChild(styleEl)
     }
@@ -53,6 +53,10 @@ function letterSpacing(root, initButton, cycleFeature, registerReset) {
     cycleFeature(button, currentLevel)
   }
 
+  handleLetterSpacing.setPreference = level => {
+    localStorage.setItem('a11y-letter-spacing', String(level))
+    setLetterSpacing(Number(level))
+  }
   initButton(button, handleLetterSpacing)
 
   function control() {

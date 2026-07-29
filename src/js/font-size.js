@@ -1,12 +1,17 @@
-const DEFAULT_FONT_SIZE = 100
 const FONT_STEP = 5
-
 let CURRENT_FONT_SIZE_LEVEL = 0
 
-function fontSize(root, initButton, cycleFeature, registerReset) {
-  // Hangi etiketlerin boyutu değişmeli? (Layout'u bozmamak için div'i dahil etmiyoruz, sadece metinleri alıyoruz)
+function fontSize(
+  root,
+  initButton,
+  cycleFeature,
+  registerReset,
+  runtime = {},
+) {
   const TEXT_TAGS =
     'h1, h2, h3, h4, h5, h6, p, a, span, li, td, th, blockquote, label, button, input, textarea, cite, caption, small, b, i, strong, em'
+  const touchedElements = new Set()
+  const originalStyles = new WeakMap()
 
   const button = {
     name: 'Yazı Boyutu',
@@ -14,90 +19,100 @@ function fontSize(root, initButton, cycleFeature, registerReset) {
     id: 'fontSizeBtn',
     type: 'cycle',
     cycleOptions: {
-      maxLevel: 4, // 4 kademe (Örn: %100, %105, %110, %115, %120)
+      maxLevel: 4,
       currentLevel: 0,
     },
   }
 
-  const handleFontSize = function () {
-    CURRENT_FONT_SIZE_LEVEL =
-      (CURRENT_FONT_SIZE_LEVEL + 1) % (button.cycleOptions.maxLevel + 1)
-    localStorage.setItem('a11y-font-size', CURRENT_FONT_SIZE_LEVEL)
+  function rememberElement(element) {
+    if (originalStyles.has(element)) {
+      touchedElements.add(element)
+      return originalStyles.get(element)
+    }
 
-    updatePageFonts(CURRENT_FONT_SIZE_LEVEL)
+    const computedSize = Number.parseFloat(window.getComputedStyle(element).fontSize)
+    if (!Number.isFinite(computedSize)) return null
 
-    // UI güncellemesi
-    cycleFeature(button, CURRENT_FONT_SIZE_LEVEL)
+    const original = {
+      computedSize,
+      inlineValue: element.style.getPropertyValue('font-size'),
+      inlinePriority: element.style.getPropertyPriority('font-size'),
+    }
+    originalStyles.set(element, original)
+    touchedElements.add(element)
+    return original
   }
 
-  /**
-   * Sayfadaki elementleri tarayıp font boyutlarını oranla çarpar.
-   */
-  function updatePageFonts(level) {
-    // Çarpanı hesapla (Örn: Level 0 = 1, Level 1 = 1.05, Level 2 = 1.10)
-    const multiplier = 1 + level * (FONT_STEP / 100)
+  function restoreElement(element) {
+    const original = originalStyles.get(element)
+    if (!original || !element.isConnected) return
 
-    // Hedeflenen tüm elementleri seç
-    const elements = document.querySelectorAll(TEXT_TAGS)
+    if (original.inlineValue) {
+      element.style.setProperty(
+        'font-size',
+        original.inlineValue,
+        original.inlinePriority,
+      )
+    } else {
+      element.style.removeProperty('font-size')
+    }
+    element.removeAttribute('data-a11y-font-size')
+    originalStyles.delete(element)
+  }
 
-    elements.forEach(el => {
-      // 1. Orijinal boyutu daha önce kaydettik mi? Kontrol et.
-      if (!el.getAttribute('data-a11y-org-size')) {
-        // Kaydetmediysek, tarayıcının hesapladığı (CSS'ten gelen) net piksel değerini al
-        const computedStyle = window.getComputedStyle(el)
-        const fontSizeStr = computedStyle.fontSize // Örn: "16px" veya "32px"
+  function restoreAll() {
+    touchedElements.forEach(restoreElement)
+    touchedElements.clear()
+  }
 
-        // Sadece geçerli bir piksel değeri varsa kaydet
-        if (fontSizeStr && fontSizeStr.includes('px')) {
-          el.setAttribute('data-a11y-org-size', parseFloat(fontSizeStr))
-        } else {
-          return // Piksel okuyamazsak atla
-        }
-      }
+  function applyToDocument() {
+    if (CURRENT_FONT_SIZE_LEVEL <= 0) return
 
-      // 2. Orijinal boyutu al
-      const originalSize = parseFloat(el.getAttribute('data-a11y-org-size'))
+    const multiplier = 1 + CURRENT_FONT_SIZE_LEVEL * (FONT_STEP / 100)
+    document.querySelectorAll(TEXT_TAGS).forEach(element => {
+      if (element.closest('[data-accessibility-preference-widget]')) return
+      const original = rememberElement(element)
+      if (!original) return
 
-      // 3. Eğer level 0 ise (Reset), inline stili temizle ki site orijinal CSS'ine dönsün
-      if (level === 0) {
-        el.style.removeProperty('font-size')
-      } else {
-        // 4. Değilse, yeni boyutu hesapla ve ata
-        const newSize = originalSize * multiplier
-        el.style.fontSize = `${newSize}px` // !important kullanmaya gerek kalmaz çünkü inline style en baskındır.
-      }
+      element.style.setProperty(
+        'font-size',
+        `${original.computedSize * multiplier}px`,
+      )
+      element.setAttribute(
+        'data-a11y-font-size',
+        String(CURRENT_FONT_SIZE_LEVEL),
+      )
     })
   }
 
-  // ÖNCE butonu oluştur
+  function setLevel(level) {
+    const normalized = Number.isFinite(level)
+      ? Math.min(Math.max(Math.trunc(level), 0), button.cycleOptions.maxLevel)
+      : 0
+
+    if (normalized === 0) restoreAll()
+    CURRENT_FONT_SIZE_LEVEL = normalized
+
+    if (normalized > 0) applyToDocument()
+    cycleFeature(button, normalized)
+  }
+
+  function handleFontSize() {
+    const nextLevel =
+      (CURRENT_FONT_SIZE_LEVEL + 1) % (button.cycleOptions.maxLevel + 1)
+    localStorage.setItem('a11y-font-size', String(nextLevel))
+    setLevel(nextLevel)
+  }
+  handleFontSize.setPreference = level => {
+    localStorage.setItem('a11y-font-size', String(level))
+    setLevel(level)
+  }
+
   initButton(button, handleFontSize)
 
-  // SONRA başlangıç kontrolünü yap
-  function control() {
-    let option = localStorage.getItem('a11y-font-size')
-    if (option !== null) {
-      CURRENT_FONT_SIZE_LEVEL = parseInt(option)
+  const savedLevel = Number.parseInt(localStorage.getItem('a11y-font-size'), 10)
+  if (Number.isFinite(savedLevel)) setLevel(savedLevel)
 
-      // Butonun görsel durumunu güncelle - BU SATIR EKSİKTİ!
-      cycleFeature(button, CURRENT_FONT_SIZE_LEVEL)
-
-      // Fontları güncelle
-      if (CURRENT_FONT_SIZE_LEVEL > 0) {
-        updatePageFonts(CURRENT_FONT_SIZE_LEVEL)
-      }
-    }
-  }
-
-  // DOM tamamen yüklendiğinde çalıştırmak daha güvenlidir
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', control)
-  } else {
-    control()
-  }
-
-  // Reset fonksiyonunu kaydet
-  registerReset(() => {
-    CURRENT_FONT_SIZE_LEVEL = 0
-    updatePageFonts(0)
-  })
+  registerReset(() => setLevel(0))
+  if (runtime.registerRefresh) runtime.registerRefresh(applyToDocument)
 }

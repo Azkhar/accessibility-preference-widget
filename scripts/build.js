@@ -1,5 +1,6 @@
 const fs = require('node:fs')
 const path = require('node:path')
+const crypto = require('node:crypto')
 const { transform } = require('esbuild')
 
 const projectRoot = path.resolve(__dirname, '..')
@@ -74,30 +75,67 @@ async function build() {
       return fs.readFileSync(absolutePath, 'utf8')
     })
     .join('\n')
+  const packageMetadata = JSON.parse(read('package.json'))
 
   const bundle = template
+    .replaceAll('@WIDGETVERSION', packageMetadata.version)
     .replace('@WIDGETHTML', escapeTemplateLiteral(html))
     .replace('@WIDGETCSS', escapeTemplateLiteral(css))
     .replace('/* @WIDGETJS */', javascript)
 
-  if (bundle.includes('@WIDGETHTML') || bundle.includes('@WIDGETCSS') || bundle.includes('@WIDGETJS')) {
+  if (
+    bundle.includes('@WIDGETHTML') ||
+    bundle.includes('@WIDGETCSS') ||
+    bundle.includes('@WIDGETJS') ||
+    bundle.includes('@WIDGETVERSION')
+  ) {
     throw new Error('Build template contains an unresolved placeholder.')
   }
 
-  const packageMetadata = JSON.parse(read('package.json'))
   const banner = `/*! Accessibility Preference Widget v${packageMetadata.version} | MIT License */\n`
 
   fs.mkdirSync(distRoot, { recursive: true })
-  fs.writeFileSync(path.join(distRoot, 'widget.js'), banner + bundle + '\n')
+  const development = await transform(bundle, {
+    legalComments: 'inline',
+    minify: false,
+    sourcemap: 'external',
+    sourcefile: 'widget.source.js',
+    target: ['es2018'],
+  })
+  const developmentCode =
+    banner + development.code + '//# sourceMappingURL=widget.js.map\n'
+  fs.writeFileSync(path.join(distRoot, 'widget.js'), developmentCode)
+  fs.writeFileSync(path.join(distRoot, 'widget.js.map'), development.map)
 
   const production = await transform(bundle, {
     legalComments: 'inline',
     minify: true,
+    sourcemap: 'external',
+    sourcefile: 'widget.source.js',
     target: ['es2018'],
   })
-  fs.writeFileSync(path.join(distRoot, 'widget.min.js'), banner + production.code)
+  const productionCode =
+    banner + production.code + '//# sourceMappingURL=widget.min.js.map\n'
+  fs.writeFileSync(path.join(distRoot, 'widget.min.js'), productionCode)
+  fs.writeFileSync(path.join(distRoot, 'widget.min.js.map'), production.map)
 
-  process.stdout.write('Built dist/widget.js and dist/widget.min.js\n')
+  const integrity = {}
+  for (const [name, content] of [
+    ['widget.js', developmentCode],
+    ['widget.min.js', productionCode],
+  ]) {
+    integrity[name] =
+      'sha384-' +
+      crypto.createHash('sha384').update(content, 'utf8').digest('base64')
+  }
+  fs.writeFileSync(
+    path.join(distRoot, 'integrity.json'),
+    JSON.stringify(integrity, null, 2) + '\n',
+  )
+
+  process.stdout.write(
+    'Built readable/minified bundles, source maps, and integrity metadata in dist/\n',
+  )
 }
 
 build().catch(error => {

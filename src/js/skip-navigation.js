@@ -1,6 +1,12 @@
 let CURRENT_SKIP_NAV_STATE = false
 
-function skipNavigation(root, initButton, toggleFeature, registerReset) {
+function skipNavigation(
+  root,
+  initButton,
+  toggleFeature,
+  registerReset,
+  runtime = {},
+) {
   const button = {
     name: 'İçeriğe Atla',
     icon: `<svg class="a11y-card-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -12,216 +18,162 @@ function skipNavigation(root, initButton, toggleFeature, registerReset) {
   }
 
   let skipLink = null
-  let hiddenElements = []
+  let target = null
+  let targetState = null
 
-  // Helper to get translation
-  const tr = key => (window.a11yI18n ? window.a11yI18n.t(key) : key)
-
-  const handleSkipNavigation = function () {
-    CURRENT_SKIP_NAV_STATE = !CURRENT_SKIP_NAV_STATE
-    localStorage.setItem('a11y-skip-nav', CURRENT_SKIP_NAV_STATE)
-    setSkipNavigation(CURRENT_SKIP_NAV_STATE)
-  }
-
-  function createSkipLink() {
-    if (skipLink) return skipLink
-
-    skipLink = document.createElement('a')
-    skipLink.href = '#main-content'
-    skipLink.id = 'a11y-skip-link'
-
-    // Improved Design with Flexbox for Icon
-    skipLink.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
-        <span>${tr('skipLink')}</span>
-    `
-
-    // Styles
-    skipLink.style.cssText = `
-      position: fixed !important;
-      top: -60px !important;
-      left: 50% !important;
-      transform: translateX(-50%) !important;
-      background: #000 !important;
-      background: rgba(17, 24, 39, 0.95) !important;
-      color: #fff !important;
-      padding: 12px 24px !important;
-      z-index: 2147483647 !important;
-      text-decoration: none !important;
-      border-radius: 0 0 12px 12px !important;
-      font-family: 'Inter', sans-serif !important;
-      font-size: 16px !important;
-      font-weight: 600 !important;
-      display: flex !important;
-      align-items: center !important;
-      gap: 10px !important;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-      backdrop-filter: blur(10px) !important;
-      transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-      border: 1px solid rgba(255,255,255,0.1) !important;
-      border-top: none !important;
-    `
-
-    // Hover effect
-    skipLink.addEventListener('mouseenter', () => {
-      skipLink.style.background = '#000000'
-    })
-    skipLink.addEventListener('mouseleave', () => {
-      skipLink.style.background = 'rgba(17, 24, 39, 0.95)'
-    })
-
-    skipLink.addEventListener('focus', function () {
-      this.style.top = '0'
-      this.style.outline = '3px solid #F7DD17'
-      this.style.outlineOffset = '-3px'
-    })
-
-    skipLink.addEventListener('blur', function () {
-      this.style.top = '-60px'
-      this.style.outline = 'none'
-    })
-
-    // Insert at beginning of body
-    document.body.insertBefore(skipLink, document.body.firstChild)
-    return skipLink
+  function translate(key) {
+    return window.a11yI18n ? window.a11yI18n.t(key) : 'Skip to main content'
   }
 
   function findMainContent() {
-    let mainContent = document.getElementById('main-content')
-    if (!mainContent) {
-      const possibleSelectors = [
-        'main',
-        '[role="main"]',
-        '.main-content',
-        '.content',
-        '#content',
-        '.main',
-        '.app-main',
-        '.page-content',
-      ]
-      for (let selector of possibleSelectors) {
-        const element = document.querySelector(selector)
-        if (element) {
-          element.id = 'main-content'
-          mainContent = element
-          if (element.getAttribute('tabindex') === null) {
-            element.setAttribute('tabindex', '-1')
-          }
-          break
-        }
-      }
-      if (!mainContent) {
-        const firstChild = document.body.children[0]
-        if (
-          firstChild &&
-          firstChild.tagName !== 'SCRIPT' &&
-          firstChild.tagName !== 'STYLE'
-        ) {
-          firstChild.id = 'main-content'
-          firstChild.setAttribute('tabindex', '-1')
-          mainContent = firstChild
-        }
+    const selectors = [
+      '#main-content',
+      'main',
+      '[role="main"]',
+      '.main-content',
+      '.page-content',
+      '#content',
+    ]
+
+    for (const selector of selectors) {
+      const element = document.querySelector(selector)
+      if (element && !element.closest('[data-accessibility-preference-widget]')) {
+        return element
       }
     }
-    return mainContent
+    return null
   }
 
-  function hideNavigationElements() {
-    const navSelectors = [
-      'nav',
-      'header',
-      '.navbar',
-      '.navigation',
-      '.nav',
-      '.header',
-      '.site-header',
-      '[role="navigation"]',
-      '.menu',
-      '.main-menu',
-    ]
-    hiddenElements = []
-    navSelectors.forEach(selector => {
-      const elements = document.querySelectorAll(selector)
-      elements.forEach(el => {
-        if (el.offsetParent !== null && !el.closest('#main-content')) {
-          const originalStyle = el.getAttribute('style') || ''
-          hiddenElements.push({ el, originalStyle })
-          el.style.cssText += 'display: none !important;'
-        }
-      })
+  function restoreTarget() {
+    if (!target || !targetState || !target.isConnected) {
+      target = null
+      targetState = null
+      return
+    }
+
+    if (targetState.generatedId) target.removeAttribute('id')
+    if (targetState.generatedTabindex) target.removeAttribute('tabindex')
+    target = null
+    targetState = null
+  }
+
+  function updateTarget() {
+    if (!CURRENT_SKIP_NAV_STATE || !skipLink) return
+    const nextTarget = findMainContent()
+    if (nextTarget === target) return
+
+    restoreTarget()
+    target = nextTarget
+    if (!target) {
+      skipLink.removeAttribute('href')
+      skipLink.setAttribute('aria-disabled', 'true')
+      return
+    }
+
+    targetState = {
+      generatedId: !target.id,
+      generatedTabindex: target.getAttribute('tabindex') === null,
+    }
+    if (!target.id) target.id = 'a11y-main-content'
+    if (targetState.generatedTabindex) target.setAttribute('tabindex', '-1')
+
+    skipLink.href = `#${target.id}`
+    skipLink.removeAttribute('aria-disabled')
+  }
+
+  function handleSkip(event) {
+    event.preventDefault()
+    updateTarget()
+    if (!target) return
+
+    target.focus({ preventScroll: true })
+    target.scrollIntoView({
+      behavior:
+        window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+          ? 'auto'
+          : 'smooth',
+      block: 'start',
     })
   }
 
-  function showNavigationElements() {
-    hiddenElements.forEach(({ el, originalStyle }) => {
-      el.style.cssText = originalStyle
+  function createSkipLink() {
+    if (skipLink) return
+
+    skipLink = document.createElement('a')
+    skipLink.id = 'a11y-skip-link'
+    skipLink.setAttribute('data-a11y-owned', '')
+    skipLink.textContent = translate('skipLink')
+    skipLink.style.cssText = `
+      position: fixed !important;
+      inset-block-start: 0 !important;
+      inset-inline-start: 1rem !important;
+      z-index: 2147483647 !important;
+      padding: 0.75rem 1rem !important;
+      border: 2px solid currentColor !important;
+      border-radius: 0 0 0.5rem 0.5rem !important;
+      background: #111827 !important;
+      color: #ffffff !important;
+      font: 600 1rem/1.25 system-ui, sans-serif !important;
+      text-decoration: none !important;
+      transform: translateY(-120%) !important;
+      transition: transform 0.15s ease !important;
+    `
+    skipLink.addEventListener('click', handleSkip)
+    skipLink.addEventListener('focus', () => {
+      skipLink.style.setProperty('transform', 'translateY(0)', 'important')
     })
-    hiddenElements = []
+    skipLink.addEventListener('blur', () => {
+      skipLink.style.setProperty('transform', 'translateY(-120%)', 'important')
+    })
+    document.body.insertBefore(skipLink, document.body.firstChild)
+    updateTarget()
+  }
+
+  function removeSkipLink() {
+    restoreTarget()
+    if (skipLink) {
+      skipLink.removeEventListener('click', handleSkip)
+      skipLink.remove()
+      skipLink = null
+    }
   }
 
   function setSkipNavigation(currentState) {
-    if (currentState) {
-      if (!skipLink) createSkipLink()
-      const mainContent = findMainContent()
-      hideNavigationElements()
+    CURRENT_SKIP_NAV_STATE = Boolean(currentState)
+    if (CURRENT_SKIP_NAV_STATE) createSkipLink()
+    else removeSkipLink()
+    toggleFeature(button, CURRENT_SKIP_NAV_STATE)
+  }
 
-      // Show and focus
-      setTimeout(() => {
-        skipLink.style.top = '0'
-        skipLink.focus()
-        // Auto-hide after delay if focus lost
-        setTimeout(() => {
-          if (document.activeElement !== skipLink) {
-            skipLink.style.top = '-60px'
-          }
-        }, 3000)
-      }, 100)
-
-      // Handle click to scroll
-      skipLink.onclick = e => {
-        e.preventDefault()
-        if (mainContent) {
-          mainContent.focus()
-          mainContent.scrollIntoView({ behavior: 'smooth' })
-          skipLink.style.top = '-60px'
-        }
-      }
-    } else {
-      showNavigationElements()
-      if (skipLink) {
-        skipLink.remove()
-        skipLink = null
-      }
-    }
-    toggleFeature(button, currentState)
+  function handleSkipNavigation() {
+    const nextState = !CURRENT_SKIP_NAV_STATE
+    localStorage.setItem('a11y-skip-nav', String(nextState))
+    setSkipNavigation(nextState)
   }
 
   initButton(button, handleSkipNavigation)
 
-  // Listen for language changes globally
-  const originalUpdate = window.updateAllTexts
-  // Hook if not already hooked (simple check)
-  // Or better, just expose a function that updateAllTexts calls if we modify i18n.js
-  // For now, let's redefine updateSkipLinkText globally
-  window.updateSkipLinkText = function () {
-    const link = document.getElementById('a11y-skip-link')
-    if (link) {
-      const span = link.querySelector('span')
-      if (span) span.innerText = tr('skipLink')
-    }
+  const previousLanguageUpdater = window.updateSkipLinkText
+  const updateSkipLinkText = function () {
+    if (skipLink) skipLink.textContent = translate('skipLink')
   }
+  window.updateSkipLinkText = updateSkipLinkText
 
-  function control() {
-    let option = localStorage.getItem('a11y-skip-nav')
-    if (option !== null) {
-      CURRENT_SKIP_NAV_STATE = option === 'true'
-      setSkipNavigation(CURRENT_SKIP_NAV_STATE)
-    }
+  const savedState = localStorage.getItem('a11y-skip-nav')
+  if (savedState !== null) setSkipNavigation(savedState === 'true')
+
+  registerReset(() => setSkipNavigation(false))
+  if (runtime.registerRefresh) runtime.registerRefresh(updateTarget)
+  if (runtime.registerCleanup) {
+    runtime.registerCleanup(() => {
+      removeSkipLink()
+      if (window.updateSkipLinkText === updateSkipLinkText) {
+        if (previousLanguageUpdater) {
+          window.updateSkipLinkText = previousLanguageUpdater
+        } else {
+          delete window.updateSkipLinkText
+        }
+      }
+    })
   }
-  control()
-
-  registerReset(() => {
-    CURRENT_SKIP_NAV_STATE = false
-    setSkipNavigation(false)
-  })
 }

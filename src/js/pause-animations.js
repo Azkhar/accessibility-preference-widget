@@ -24,7 +24,7 @@ function pauseAnimations(root, initButton, toggleFeature, registerReset) {
 
     if (currentState) {
       if (!styleEl) {
-        styleEl = document.createElement('style')
+        styleEl = prepareWidgetStyle(document.createElement('style'))
         styleEl.id = 'a11y-pause-animations-style'
         document.head.appendChild(styleEl)
       }
@@ -53,6 +53,10 @@ function pauseAnimations(root, initButton, toggleFeature, registerReset) {
     toggleFeature(button, currentState)
   }
 
+  handlePauseAnimations.setPreference = state => {
+    localStorage.setItem('a11y-pause-animations', String(Boolean(state)))
+    setPauseAnimations(Boolean(state))
+  }
   initButton(button, handlePauseAnimations)
 
   function control() {

@@ -21,7 +21,7 @@ function highlightLinks(root, initButton, toggleFeature, registerReset) {
 
     if (currentState) {
       if (!styleEl) {
-        styleEl = document.createElement('style')
+        styleEl = prepareWidgetStyle(document.createElement('style'))
         styleEl.id = 'a11y-highlight-links-style'
         document.head.appendChild(styleEl)
       }
@@ -43,6 +43,10 @@ function highlightLinks(root, initButton, toggleFeature, registerReset) {
     toggleFeature(button, currentState)
   }
 
+  handleHighlightLinks.setPreference = state => {
+    localStorage.setItem('a11y-highlight-links', String(Boolean(state)))
+    setHighlightLinks(Boolean(state))
+  }
   initButton(button, handleHighlightLinks)
 
   function control() {

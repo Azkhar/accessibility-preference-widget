@@ -26,7 +26,7 @@ function highlightTitles(root, initButton, toggleFeature, registerReset) {
 
     if (state) {
       if (!styleEl) {
-        styleEl = document.createElement('style')
+        styleEl = prepareWidgetStyle(document.createElement('style'))
         styleEl.id = 'a11y-highlight-titles-style'
         document.head.appendChild(styleEl)
       }
@@ -49,6 +49,10 @@ function highlightTitles(root, initButton, toggleFeature, registerReset) {
     toggleFeature(button, state)
   }
 
+  handleHighlightTitles.setPreference = state => {
+    localStorage.setItem('a11y-highlight-titles', String(Boolean(state)))
+    setHighlightTitles(Boolean(state))
+  }
   initButton(button, handleHighlightTitles)
 
   // Load State

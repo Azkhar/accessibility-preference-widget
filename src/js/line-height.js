@@ -38,7 +38,7 @@ function lineHeight(root, initButton, cycleFeature, registerReset) {
 
     // Style elementini oluştur veya güncelle
     if (!styleEl) {
-      styleEl = document.createElement('style')
+      styleEl = prepareWidgetStyle(document.createElement('style'))
       styleEl.id = 'a11y-line-height-style'
       document.head.appendChild(styleEl)
     }
@@ -52,6 +52,10 @@ function lineHeight(root, initButton, cycleFeature, registerReset) {
     cycleFeature(button, currentLevel)
   }
 
+  handleLineHeight.setPreference = level => {
+    localStorage.setItem('a11y-line-height', String(level))
+    setLineHeight(Number(level))
+  }
   initButton(button, handleLineHeight)
 
   function control() {

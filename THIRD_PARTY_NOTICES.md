@@ -34,6 +34,16 @@ esbuild is used only as a development dependency to minify the production bundle
 
 The installed dependency tree and exact versions are recorded in `package-lock.json`.
 
+## jsdom
+
+jsdom is used only by the Node.js test suite to exercise browser-like runtime behavior. It is not included in the distributed browser bundle.
+
+- Project: jsdom
+- Source: https://github.com/jsdom/jsdom
+- License: MIT
+
+jsdom's transitive development dependencies and exact versions are recorded in `package-lock.json`.
+
 ## Fonts and images
 
 The public core bundles no third-party font or image files and makes no font CDN requests. The UI uses operating-system font stacks. The demo contains no remote images.

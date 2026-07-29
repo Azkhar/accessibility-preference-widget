@@ -1,118 +1,161 @@
 # Accessibility Preference Widget
 
-A WCAG 2.2-focused accessibility preference widget built with vanilla JavaScript, Shadow DOM isolation, and persistent user settings.
+A dependency-free, WCAG 2.2-focused accessibility preference widget for static sites and single-page applications. Its interface runs in Shadow DOM while user-selected presentation preferences are applied to the host page.
 
 > This widget does not by itself make a website WCAG-conformant. Site-wide design, content, code, and assistive-technology testing are still required.
 
 ## Features
 
-- One-script browser integration
-- Shadow DOM for the widget interface
-- Preferences persisted in `localStorage`
-- Text size, font family, line height, letter spacing, and text alignment controls
+- One-script, keyless integration with no application-level network requests
+- Open Shadow DOM for interface isolation
+- Preferences persisted under `a11y-*` keys in `localStorage`
+- Text size, font family, line height, letter spacing, and text alignment
 - Dark, warm, light, and blue contrast modes
-- Monochrome mode and image hiding
-- Reading line and reading mask
-- Large cursor and enhanced focus indicators
-- Pause-animation preference
-- Link and heading highlighting
-- Skip-to-content helper and explanatory tooltips
-- Browser speech synthesis-based audio description controls
-- Multilingual interface
+- Monochrome presentation, image hiding, and animation pausing
+- Reading line, reading mask, skip-to-content, and browser-based read aloud
+- Large cursor, enhanced focus indicator, link highlighting, and heading highlighting
+- Six optional preference presets
+- Eleven interface languages
+- SPA route awareness, dynamic-content refresh, and explicit lifecycle API
+- Bottom-left or bottom-right placement, configurable offsets, and CSP nonce support
 
-The public core does not include license validation, customer-specific services, sign-language video services, keyboard-navigation simulation, a screen-reader replacement, or layout-control modules.
+The public core does not contain license validation, customer-specific services, proprietary APIs, sign-language video services, keyboard-navigation simulation, a screen-reader replacement, or layout-control modules.
 
 ## Quick start
 
-Use the production bundle on a page:
+Build the repository and self-host the production bundle:
 
 ```html
-<script src="/assets/widget.min.js" defer></script>
+<script src="/vendor/accessibility-preference-widget/widget.min.js" defer></script>
 ```
 
-Use `dist/widget.js` during development when readable source is preferable.
+No key, endpoint, account, or remote service is required. Use `dist/widget.js` instead when a readable development bundle is preferable.
 
-The widget mounts itself once, creates an open Shadow Root, and injects its trigger and preference dialog into the page. No key, endpoint, or remote service is required.
+This repository is prepared for npm packaging, but do not assume the package name is available from the npm registry until an official release is published.
 
-## Build from source
+## Build and test
 
-Requirements:
-
-- Node.js 18 or later
-- npm with lockfile support
+Requirements: Node.js 18 or later and npm.
 
 ```bash
 npm ci
-npm run build
+npm run check
 npm test
+npm audit --audit-level=high
 ```
 
 `npm run build` creates:
 
-- `dist/widget.js` — readable development bundle
-- `dist/widget.min.js` — minified production bundle
+- `dist/widget.js` and `dist/widget.js.map`
+- `dist/widget.min.js` and `dist/widget.min.js.map`
+- `dist/integrity.json` with SHA-384 integrity values
 
-The build creates `dist/` automatically.
+The `dist/` directory is created automatically and intentionally ignored by Git.
+
+## Configuration
+
+Set configuration before loading the bundle:
+
+```html
+<script>
+  window.AccessibilityPreferenceWidgetConfig = {
+    position: "bottom-left",
+    language: "en",
+    excludePaths: ["/checkout"],
+    offsetX: "1.5rem",
+    offsetY: "1.5rem"
+  };
+</script>
+<script src="/vendor/accessibility-preference-widget/widget.min.js" defer></script>
+```
+
+Or use data attributes:
+
+```html
+<script
+  src="/vendor/accessibility-preference-widget/widget.min.js"
+  data-position="bottom-left"
+  data-language="en"
+  data-exclude-paths="/checkout,/embed/*"
+  data-offset-x="1.5rem"
+  data-offset-y="1.5rem"
+  defer
+></script>
+```
+
+Supported options:
+
+| Option | Default | Purpose |
+| --- | --- | --- |
+| `autoMount` | `true` | Mount when the document is ready |
+| `disabled` | `false` | Keep the widget unmounted |
+| `excludePaths` | `[]` | Exact, prefix, wildcard, regular-expression, or callback exclusions |
+| `includePaths` | `[]` | Optional route allowlist |
+| `observeDom` | `true` | Refresh active preferences for dynamic content |
+| `position` | `"bottom-right"` | `"bottom-right"` or `"bottom-left"` |
+| `offsetX` / `offsetY` | `"25px"` | Trigger offsets, including CSS units |
+| `zIndex` | `999999` | Widget stacking level |
+| `language` | `"auto"` | Supported language code or browser detection |
+| `nonce` | `""` | CSP nonce copied to widget-owned style elements |
+
+For a strict Content Security Policy, pass the page's per-response nonce through the global configuration or `data-nonce`. A nonce is not a substitute for an appropriate `script-src` and `style-src` policy.
+
+## Runtime API
+
+The bundle exposes `window.AccessibilityPreferenceWidget`:
+
+```js
+const widget = window.AccessibilityPreferenceWidget
+
+widget.open()
+widget.close()
+widget.refresh()
+widget.configure({ position: "bottom-left", language: "tr" })
+widget.destroy()
+widget.mount()
+widget.reset()
+```
+
+Additional methods are `disconnect()`, `getConfig()`, `getHost()`, and `isMounted()`. `destroy()` removes page effects while preserving stored preferences by default; use `destroy({ preservePreferences: false })` to clear them.
+
+Lifecycle events are dispatched on `document`:
+
+- `accessibility-preference-widget:mounted`
+- `accessibility-preference-widget:destroyed`
+- `accessibility-preference-widget:refreshed`
+- `accessibility-preference-widget:routechange`
+
+See [docs/integration.md](docs/integration.md) for static-site, SPA, Next.js, route-exclusion, and CSP examples.
 
 ## Demo
 
-Build the project, then serve the repository root with any local static server and open `demo/index.html`.
-
-For example:
+Build the project, serve the repository root with any local static server, and open `demo/index.html`.
 
 ```bash
 npx --yes http-server .
 ```
 
-The demo uses only the local readable bundle and does not require a key or service connection. The `npx` example downloads a third-party development tool if it is not already cached; any equivalent local HTTP server can be used instead.
+The demo uses the local readable bundle. The `npx` command may download a third-party development tool; any equivalent local HTTP server can be used.
 
-## Architecture and page effects
+## Architecture and scope
 
-The widget interface is isolated in Shadow DOM. Preference modules intentionally apply CSS classes, styles, or helper elements to the host document so they can affect page content. Settings are stored under `a11y-*` keys in `localStorage`.
+The Shadow DOM isolates the control interface. Preference modules intentionally add widget-owned classes, inline styles, style elements, or helper elements to the host document so that they can affect page content. The runtime tracks those changes, refreshes dynamic content, and restores prior inline values during reset or destroy.
 
-Reset removes widget-owned preferences while preserving the selected interface language.
+Read aloud uses the browser Web Speech API and system/browser voices. Availability and behavior vary by platform. The widget makes no conformance guarantee and is not an automated remediation layer, accessibility audit, screen reader, or certification tool.
 
-The bundle performs no application-level network requests. It uses system font stacks. Audio description relies on the browser's Web Speech API and the voices available in the user's operating system or browser.
-
-## Accessibility scope
-
-See [docs/accessibility.md](docs/accessibility.md) for implemented behavior, known limitations, and the required manual test matrix.
-
-The project is WCAG 2.2-focused. It is a user-preference tool, not an automated remediation layer or conformance certificate.
+See [docs/accessibility.md](docs/accessibility.md) for verified behavior, remaining limitations, and the manual release test matrix.
 
 ## Browser support
 
-The current implementation requires:
+The runtime targets modern browsers with Shadow DOM, `inert`, `localStorage`, MutationObserver, and standard DOM APIs. Read aloud additionally requires the Web Speech API. Storage failures fall back to in-memory preferences for the current page session.
 
-- Shadow DOM
-- `inert`
-- `localStorage`
-- modern DOM APIs such as `composedPath`
-- Web Speech API only for the optional audio-description preference
+A complete browser and assistive-technology compatibility matrix has not yet been performed.
 
-No formal browser/assistive-technology compatibility matrix has been completed yet.
+## Contributing, security, and licenses
 
-## Development
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [SECURITY.md](SECURITY.md)
+- [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
+- [CHANGELOG.md](CHANGELOG.md)
 
-Before submitting a change:
-
-```bash
-npm ci
-npm test
-```
-
-Tests build both bundles and check package metadata, initial dialog semantics, demo independence, excluded private integrations, and prohibited definitive WCAG wording.
-
-## Contributing and security
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
-
-Do not report vulnerabilities, keys, tokens, private URLs, or customer data in public issues. Follow [SECURITY.md](SECURITY.md).
-
-## Third-party notices
-
-See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). The project bundles no third-party font files and makes no font CDN requests.
-
-## License
-
-The project is provided under the [MIT License](LICENSE), subject to confirmation that all original contributors and applicable rights holders authorize the public release. Third-party components remain under their respective licenses.
+The project is licensed under the [MIT License](LICENSE), subject to confirmation that all original contributors and applicable rights holders authorize the public release. Third-party components remain under their respective licenses.

@@ -23,7 +23,7 @@ The widget changes presentation and exposes user controls. It does not audit, re
 
 The interface is hosted in an open Shadow Root. Modules intentionally modify the host document with widget-owned classes, inline styles, `<style>` elements, and helper overlays. Preferences are stored with `a11y-*` `localStorage` keys.
 
-Reset attempts to remove all widget-owned effects and storage values except the interface language. Host applications should still verify that their own dynamic DOM and styles are fully restored.
+Reset removes registered widget-owned effects and storage values except the interface language. Destroy also removes widget-owned helper elements and styles. Active text-size and image-hiding preferences are refreshed when host applications add content. Host applications should still verify that their dynamic DOM and site-specific styles are fully restored.
 
 ## Excluded capabilities
 
@@ -42,11 +42,12 @@ These capabilities must not be advertised as active features.
 
 - No formal WCAG conformance evaluation has been performed.
 - No complete browser and assistive-technology matrix has been completed.
-- Image hiding applies to images present when the preference runs; newly inserted images may require reapplying the preference.
-- Some host-page styles use broad selectors and can conflict with site-specific CSS.
-- The audio-description control uses browser speech synthesis. Voice availability and behavior vary by browser and operating system.
+- MutationObserver-based refresh cannot guarantee compatibility with every virtualized, embedded, or closed-shadow-root component.
+- Some host-page transformations intentionally use broad selectors and can conflict with site-specific CSS.
+- Read aloud uses browser speech synthesis. Voice availability, language quality, and behavior vary by browser and operating system.
 - Preset profiles combine preferences and are not medical recommendations.
 - Shadow DOM isolates the control interface, but the intended page-level transformations are not isolated.
+- Automated tests use a simulated DOM and do not replace real-browser or assistive-technology testing.
 
 ## Manual release test matrix
 

@@ -22,22 +22,14 @@ function monochrome(root, initButton, toggleFeature, registerReset) {
 
     if (currentState) {
       if (!styleEl) {
-        styleEl = document.createElement('style')
+        styleEl = prepareWidgetStyle(document.createElement('style'))
         styleEl.id = 'a11y-monochrome-style'
         document.head.appendChild(styleEl)
       }
 
       styleEl.textContent = `
         html {
-          filter: grayscale(100%);
-          width: 100%;
-          height: 100%;
-        }
-
-        body {
-          margin: 0;
-          padding: 0;
-          width: 100%;
+          filter: grayscale(100%) !important;
         }
       `
     } else {
@@ -49,6 +41,10 @@ function monochrome(root, initButton, toggleFeature, registerReset) {
     toggleFeature(button, currentState)
   }
 
+  handleMonochrome.setPreference = state => {
+    localStorage.setItem('a11y-monochrome', String(Boolean(state)))
+    setMonochrome(Boolean(state))
+  }
   initButton(button, handleMonochrome)
 
   function control() {

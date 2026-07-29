@@ -13,10 +13,11 @@ Thank you for helping improve the Accessibility Preference Widget.
 
 ```bash
 npm ci
+npm run check
 npm test
 ```
 
-`npm test` creates fresh development and production bundles before running the test suite.
+`npm test` creates fresh development and production bundles before running the test suite. Run `npm run validate` when network access is available to include the dependency audit.
 
 ## Pull request checklist
 
@@ -26,6 +27,7 @@ npm test
 - Check at least one screen reader/browser combination for user-interface changes.
 - Confirm that disabling and resetting a feature restores host-page state.
 - Run a secret scan and `npm audit`.
+- Confirm the bundle still works with `localStorage` unavailable and, when relevant, with a strict CSP nonce.
 - Update README, accessibility documentation, and third-party notices when applicable.
 - Do not commit generated secrets, customer data, `.env` files, or private URLs.
 

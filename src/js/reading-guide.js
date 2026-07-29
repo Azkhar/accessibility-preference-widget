@@ -138,6 +138,10 @@ function readingGuide(root, initButton, cycleFeature, registerReset) {
     }
   }
 
+  handleReadingGuide.setPreference = level => {
+    localStorage.setItem('a11y-reading-guide-level', String(level))
+    setReadingGuide(Number(level))
+  }
   initButton(button, handleReadingGuide)
 
   // Initial Load

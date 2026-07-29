@@ -29,7 +29,7 @@ function focusIndicator(root, initButton, toggleFeature, registerReset) {
 
     if (currentState) {
       if (!styleEl) {
-        styleEl = document.createElement('style')
+        styleEl = prepareWidgetStyle(document.createElement('style'))
         styleEl.id = 'a11y-focus-indicator-style'
         document.head.appendChild(styleEl)
       }
@@ -143,6 +143,10 @@ function focusIndicator(root, initButton, toggleFeature, registerReset) {
     toggleFeature(button, currentState)
   }
 
+  handleFocusIndicator.setPreference = state => {
+    localStorage.setItem('a11y-focus-indicator', String(Boolean(state)))
+    setFocusIndicator(Boolean(state))
+  }
   initButton(button, handleFocusIndicator)
 
   function control() {

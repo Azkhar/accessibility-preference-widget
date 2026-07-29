@@ -38,7 +38,7 @@ function fontFamily(root, initButton, cycleFeature, registerReset) {
 
     if (currentLevel > 0) {
       const fontFamilyValue = FONT_FAMILY_VALUES[currentLevel]
-      styleEl = document.createElement('style')
+      styleEl = prepareWidgetStyle(document.createElement('style'))
       styleEl.id = 'a11y-font-family-style'
       styleEl.textContent = `
       body, body *:not(script):not(style):not(#a11y-widget-trigger):not(#a11y-widget-panel):not(#a11y-widget-panel *):not(.fa):not(.fas):not(.far):not(.fab):not(.material-icons):not([class*="icon"]):not([class*="Icon"]):not(.glyphicon):not([class*="bi-"]):not([class*="ti-"]) {
@@ -51,6 +51,10 @@ function fontFamily(root, initButton, cycleFeature, registerReset) {
     cycleFeature(button, currentLevel)
   }
 
+  handleFontFamily.setPreference = level => {
+    localStorage.setItem('a11y-font-family', String(level))
+    setFontFamily(Number(level))
+  }
   initButton(button, handleFontFamily)
 
   function control() {

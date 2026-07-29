@@ -138,7 +138,12 @@
             Preferences are stored locally in this browser. This demo makes no
             application-level service requests.
           </p>
-          <button class="demo-action" type="button">Example action</button>
+          <button class="demo-action" type="button" id="add-content">
+            Add dynamic content
+          </button>
+          <button class="demo-action" type="button" id="reset-widget">
+            Reset widget preferences
+          </button>
         </div>
         <div
           class="demo-graphic"
@@ -178,5 +183,18 @@
     <footer>
       <p>Demo content is included locally in this repository.</p>
     </footer>
+    <script>
+      document.getElementById("add-content").addEventListener("click", () => {
+        const article = document.createElement("article");
+        article.className = "card";
+        article.innerHTML =
+          "<h3>Dynamic content</h3><p>This card was added after the widget mounted.</p>";
+        document.querySelector(".cards").append(article);
+      });
+
+      document.getElementById("reset-widget").addEventListener("click", () => {
+        window.AccessibilityPreferenceWidget?.reset();
+      });
+    </script>
   </body>
 </html>

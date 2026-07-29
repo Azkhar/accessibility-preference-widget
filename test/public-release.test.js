@@ -31,6 +31,7 @@ test('package metadata points to build artifacts and uses MIT', () => {
   const metadata = JSON.parse(read('package.json'))
   assert.equal(metadata.main, 'dist/widget.js')
   assert.equal(metadata.browser, 'dist/widget.min.js')
+  assert.equal(metadata.types, 'types/index.d.ts')
   assert.equal(metadata.license, 'MIT')
   assert.match(metadata.description, /^WCAG 2\.2-focused /)
   assert.ok(fs.existsSync(path.join(projectRoot, metadata.main)))
@@ -41,10 +42,14 @@ test('build creates readable and minified standalone bundles', () => {
   const development = read('dist/widget.js')
   const production = read('dist/widget.min.js')
 
-  assert.match(development, /attachShadow\(\{ mode: 'open' \}\)/)
-  assert.match(development, /main\(shadowRoot\)/)
+  assert.match(development, /attachShadow\(\{ mode: ["']open["'] \}\)/)
+  assert.match(development, /AccessibilityPreferenceWidget/)
+  assert.match(development, /main\(shadowRoot/)
   assert.ok(production.length < development.length)
   assert.ok(development.length > 1000)
+  assert.ok(fs.existsSync(path.join(projectRoot, 'dist/widget.js.map')))
+  assert.ok(fs.existsSync(path.join(projectRoot, 'dist/widget.min.js.map')))
+  assert.ok(fs.existsSync(path.join(projectRoot, 'dist/integrity.json')))
 })
 
 test('public runtime contains no private integrations or definitive WCAG claims', () => {

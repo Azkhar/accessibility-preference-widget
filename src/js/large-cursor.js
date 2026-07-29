@@ -21,7 +21,7 @@ function largeCursor(root, initButton, toggleFeature, registerReset) {
 
     if (currentState) {
       if (!styleEl) {
-        styleEl = document.createElement('style')
+        styleEl = prepareWidgetStyle(document.createElement('style'))
         styleEl.id = 'a11y-large-cursor-style'
         document.head.appendChild(styleEl)
       }
@@ -44,6 +44,10 @@ function largeCursor(root, initButton, toggleFeature, registerReset) {
     toggleFeature(button, currentState)
   }
 
+  handleLargeCursor.setPreference = state => {
+    localStorage.setItem('a11y-large-cursor', String(Boolean(state)))
+    setLargeCursor(Boolean(state))
+  }
   initButton(button, handleLargeCursor)
 
   function control() {

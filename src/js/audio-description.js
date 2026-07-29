@@ -1,5 +1,5 @@
 /**
- * Audio Description Feature (TTS Based)
+ * Read Aloud Feature (Web Speech API)
  * Reads text content aloud using SpeechSynthesis with a visual player UI.
  * Users hover/click to select elements, and can navigate through them using the player.
  * @param {ShadowRoot} root - The shadow root of the widget
@@ -10,11 +10,17 @@
 
 let CURRENT_AUDIO_DESC_STATE = false
 
-function audioDescription(root, initButton, toggleFeature, registerReset) {
+function audioDescription(
+  root,
+  initButton,
+  toggleFeature,
+  registerReset,
+  runtime = {},
+) {
   const button = {
     id: 'audioDescriptionBtn',
     icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`,
-    name: 'Sesli Betimleme', // Will be translated by i18n
+    name: 'Sesli Oku',
     type: 'toggle',
   }
 
@@ -29,7 +35,7 @@ function audioDescription(root, initButton, toggleFeature, registerReset) {
   // --- Styles ---
   function injectStyles() {
     if (!document.getElementById('a11y-audio-desc-style')) {
-      const style = document.createElement('style')
+      const style = prepareWidgetStyle(document.createElement('style'))
       style.id = 'a11y-audio-desc-style'
       style.textContent = `
         /* Highlight Style */
@@ -235,7 +241,7 @@ function audioDescription(root, initButton, toggleFeature, registerReset) {
   window.updateAudioDescriptionTexts = function () {
     if (!playerEl) return
 
-    const tTitle = getTranslation('audioDescriptionBtn', 'Sesli Betimleme')
+    const tTitle = getTranslation('audioDescriptionBtn', 'Sesli Oku')
     const tClose = getTranslation('close', 'Kapat')
     const tPrev = getTranslation('previous', 'Önceki')
     const tNext = getTranslation('next', 'Sonraki')
@@ -304,7 +310,7 @@ function audioDescription(root, initButton, toggleFeature, registerReset) {
 
   function renderPlayerContent() {
     const tClose = getTranslation('close', 'Kapat')
-    const tTitle = getTranslation('audioDescriptionBtn', 'Sesli Betimleme')
+    const tTitle = getTranslation('audioDescriptionBtn', 'Sesli Oku')
 
     return `
       <div class="a11y-ad-header">
@@ -347,7 +353,10 @@ function audioDescription(root, initButton, toggleFeature, registerReset) {
   // --- TTS Engine ---
 
   function stopSpeaking() {
-    if (window.speechSynthesis.speaking || window.speechSynthesis.paused) {
+    if (
+      window.speechSynthesis &&
+      (window.speechSynthesis.speaking || window.speechSynthesis.paused)
+    ) {
       window.speechSynthesis.cancel()
     }
   }
@@ -355,9 +364,15 @@ function audioDescription(root, initButton, toggleFeature, registerReset) {
   function speak(text) {
     stopSpeaking()
 
-    if (!text) return
+    if (
+      !text ||
+      !window.speechSynthesis ||
+      typeof window.SpeechSynthesisUtterance !== 'function'
+    ) {
+      return
+    }
 
-    activeUtterance = new SpeechSynthesisUtterance(text)
+    activeUtterance = new window.SpeechSynthesisUtterance(text)
 
     // Language Mock/Detection
     let lang = 'tr-TR' // Default
@@ -556,8 +571,7 @@ function audioDescription(root, initButton, toggleFeature, registerReset) {
   function handleGlobalClick(e) {
     if (
       e.target.closest('#a11y-widget-host') ||
-      e.target.closest('.a11y-ad-player') ||
-      e.target.closest('.a11y-sign-lang-btn') // Ignore Sign Language Button
+      e.target.closest('.a11y-ad-player')
     )
       return
 
@@ -613,13 +627,16 @@ function audioDescription(root, initButton, toggleFeature, registerReset) {
   }
 
   function toggleState(state) {
-    CURRENT_AUDIO_DESC_STATE = state
-    if (state) {
+    const supported =
+      Boolean(window.speechSynthesis) &&
+      typeof window.SpeechSynthesisUtterance === 'function'
+    CURRENT_AUDIO_DESC_STATE = Boolean(state && supported)
+    if (CURRENT_AUDIO_DESC_STATE) {
       enableFeature()
     } else {
       disableFeature()
     }
-    toggleFeature(button, state)
+    toggleFeature(button, CURRENT_AUDIO_DESC_STATE)
   }
 
   // --- Initialization ---
@@ -632,12 +649,27 @@ function audioDescription(root, initButton, toggleFeature, registerReset) {
 
   initButton(button, handleAudioDesc)
 
-  const savedState = localStorage.getItem('a11y-audio-desc')
-  if (savedState === 'true') {
-    setTimeout(() => toggleState(true), 500)
+  const buttonElement = root.getElementById(button.id)
+  const supported =
+    Boolean(window.speechSynthesis) &&
+    typeof window.SpeechSynthesisUtterance === 'function'
+  if (!supported && buttonElement) {
+    buttonElement.disabled = true
+    buttonElement.setAttribute('aria-disabled', 'true')
   }
+
+  const savedState = localStorage.getItem('a11y-audio-desc')
+  if (savedState === 'true' && supported) toggleState(true)
 
   registerReset(() => {
     toggleState(false)
   })
+  if (runtime.registerRefresh) {
+    runtime.registerRefresh(() => {
+      if (CURRENT_AUDIO_DESC_STATE) buildPlaylist()
+    })
+  }
+  if (runtime.registerCleanup) {
+    runtime.registerCleanup(() => toggleState(false))
+  }
 }
