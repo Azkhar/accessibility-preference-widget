@@ -1,0 +1,657 @@
+/**
+ * Çoklu Dil Desteği Modülü
+ */
+
+const TRANSLATIONS = {
+  tr: {
+    langName: 'Türkçe',
+    flag: '🇹🇷',
+    widgetTitle: 'ERİŞİLEBİLİRLİK ARAÇLARI',
+    wcagFocus: 'WCAG 2.2-focused',
+    resetSettings: 'AYARLARI SIFIRLA',
+    close: 'Kapat',
+    profilesHeader: 'Erişilebilirlik Profilleri',
+    'seizure-safe': 'Nöbet ve Epilepsi',
+    'vision-impaired': 'Görme Engelli',
+    'adhd-friendly': 'DEHB Dostu',
+    'cognitive-disability': 'Bilişsel Engel',
+    'motor-impaired': 'Bedensel Engel',
+    dyslexia: 'Disleksi Dostu',
+    'color-blind': 'Renk Körlüğü',
+    fontSizeBtn: 'Yazı Boyutu',
+    highContrastBtn: 'Kontrast',
+    contrastDark: 'Koyu Kontrast',
+    contrastLight: 'Açık Kontrast',
+    contrastWarm: 'Sıcak Kontrast',
+    contrastBlue: 'Mavi Kontrast',
+    monochromeBtn: 'Monokrom',
+    readingGuideBtn: 'Okuma Rehberi',
+    pauseAnimationsBtn: 'Animasyonları Durdur',
+    hideImagesBtn: 'Resimleri Gizle',
+    highlightLinksBtn: 'Linkleri Vurgula',
+    highlightTitlesBtn: 'Başlıkları Vurgula',
+    cursorBtn: 'Büyük İmleç',
+    lineHeightBtn: 'Satır Yüksekliği',
+    letterSpacingBtn: 'Harf Aralığı',
+    textAlignBtn: 'Metin Hizala',
+    fontFamilyBtn: 'Yazı Tipi',
+    tooltipBtn: 'İpuçları',
+    skipLink: 'İçeriğe Atla',
+    skipNavigationBtn: 'İçeriğe Atla',
+    focusIndicatorBtn: 'Odak Göstergesi',
+    largeCursorBtn: 'Büyük İmleç',
+    languageHeader: 'Dil Seçimi',
+    searchLanguage: 'Dil Ara...',
+    previous: 'Önceki',
+    next: 'Sonraki',
+    loading: 'Yükleniyor...',
+    videoNotFound: 'Video bulunamadı',
+    audioDescriptionBtn: 'Sesli Betimleme',
+    replay: 'Tekrarla',
+    play: 'Oynat',
+    pause: 'Duraklat',
+  },
+  en: {
+    langName: 'English',
+    flag: '🇬🇧',
+    widgetTitle: 'ACCESSIBILITY TOOLS',
+    wcagFocus: 'WCAG 2.2-focused',
+    resetSettings: 'RESET SETTINGS',
+    close: 'Close',
+    profilesHeader: 'Accessibility Profiles',
+    'seizure-safe': 'Seizure & Epileptic',
+    'vision-impaired': 'Vision Impaired',
+    'adhd-friendly': 'ADHD Friendly',
+    'cognitive-disability': 'Cognitive Disability',
+    'motor-impaired': 'Motor Impaired',
+    dyslexia: 'Dyslexia Friendly',
+    'color-blind': 'Color Blind',
+    fontSizeBtn: 'Text Size',
+    highContrastBtn: 'Contrast',
+    contrastDark: 'Dark Contrast',
+    contrastLight: 'Light Contrast',
+    contrastWarm: 'Warm Contrast',
+    contrastBlue: 'Blue Contrast',
+    monochromeBtn: 'Monochrome',
+    readingGuideBtn: 'Reading Guide',
+    pauseAnimationsBtn: 'Pause Animations',
+    hideImagesBtn: 'Hide Images',
+    highlightLinksBtn: 'Highlight Links',
+    highlightTitlesBtn: 'Highlight Titles',
+    cursorBtn: 'Big Cursor',
+    lineHeightBtn: 'Line Height',
+    letterSpacingBtn: 'Letter Spacing',
+    textAlignBtn: 'Text Align',
+    fontFamilyBtn: 'Font Family',
+    tooltipBtn: 'Tooltips',
+    skipLink: 'Skip to Content',
+    skipNavigationBtn: 'Skip to Content',
+    focusIndicatorBtn: 'Focus Indicator',
+    largeCursorBtn: 'Big Cursor',
+    languageHeader: 'Select Language',
+    searchLanguage: 'Search Language...',
+    previous: 'Previous',
+    next: 'Next',
+    loading: 'Loading...',
+    videoNotFound: 'Video not found',
+    audioDescriptionBtn: 'Audio Description',
+    replay: 'Replay',
+    play: 'Play',
+    pause: 'Pause',
+  },
+  de: {
+    langName: 'Deutsch',
+    flag: '🇩🇪',
+    widgetTitle: 'BARRIEREFREIHEITS-TOOLS',
+    wcagFocus: 'WCAG 2.2-focused',
+    resetSettings: 'EINSTELLUNGEN ZURÜCKSETZEN',
+    close: 'Schließen',
+    profilesHeader: 'Barrierefreiheits-Profile',
+    'seizure-safe': 'Anfallsicher',
+    'vision-impaired': 'Sehbehindert',
+    'adhd-friendly': 'ADHS-Freundlich',
+    'cognitive-disability': 'Kognitive Behinderung',
+    'motor-impaired': 'Motorisch Eingeschränkt',
+    dyslexia: 'Dyslexie-Freundlich',
+    'color-blind': 'Farbenblind',
+    fontSizeBtn: 'Schriftgröße',
+    highContrastBtn: 'Kontrast',
+    contrastDark: 'Dunkler Kontrast',
+    contrastLight: 'Heller Kontrast',
+    contrastWarm: 'Warmer Kontrast',
+    contrastBlue: 'Blauer Kontrast',
+    monochromeBtn: 'Monochrom',
+    readingGuideBtn: 'Lesehilfe',
+    pauseAnimationsBtn: 'Animationen Anhalten',
+    hideImagesBtn: 'Bilder Ausblenden',
+    highlightLinksBtn: 'Links Hervorheben',
+    highlightTitlesBtn: 'Titel Hervorheben',
+    cursorBtn: 'Großer Cursor',
+    lineHeightBtn: 'Zeilenhöhe',
+    letterSpacingBtn: 'Buchstabenabstand',
+    textAlignBtn: 'Textausrichtung',
+    fontFamilyBtn: 'Schriftart',
+    tooltipBtn: 'Tooltips',
+    skipLink: 'Zum Inhalt Springen',
+    skipNavigationBtn: 'Zum Inhalt Springen',
+    focusIndicatorBtn: 'Fokus-Indikator',
+    largeCursorBtn: 'Großer Cursor',
+    languageHeader: 'Sprache',
+    searchLanguage: 'Suchen...',
+    previous: 'Zurück',
+    next: 'Weiter',
+    loading: 'Laden...',
+    videoNotFound: 'Video nicht gefunden',
+    audioDescriptionBtn: 'Audiodeskription',
+    replay: 'Wiederholen',
+    play: 'Abspielen',
+    pause: 'Pause',
+  },
+  fr: {
+    langName: 'Français',
+    flag: '🇫🇷',
+    widgetTitle: "OUTILS D'ACCESSIBILITÉ",
+    wcagFocus: 'WCAG 2.2-focused',
+    resetSettings: 'RÉINITIALISER',
+    close: 'Fermer',
+    profilesHeader: "Profils d'Accessibilité",
+    'seizure-safe': 'Sécurité Épilepsie',
+    'vision-impaired': 'Malvoyant',
+    'adhd-friendly': 'Adapté TDAH',
+    'cognitive-disability': 'Handicap Cognitif',
+    'motor-impaired': 'Handicap Moteur',
+    dyslexia: 'Adapté Dyslexie',
+    'color-blind': 'Daltonisme',
+    fontSizeBtn: 'Taille du Texte',
+    highContrastBtn: 'Contraste',
+    contrastDark: 'Contraste Sombre',
+    contrastLight: 'Contraste Clair',
+    contrastWarm: 'Contraste Chaud',
+    contrastBlue: 'Contraste Bleu',
+    monochromeBtn: 'Monochrome',
+    readingGuideBtn: 'Guide de Lecture',
+    pauseAnimationsBtn: 'Pause Animations',
+    hideImagesBtn: 'Masquer Images',
+    highlightLinksBtn: 'Surligner Liens',
+    highlightTitlesBtn: 'Surligner Titres',
+    cursorBtn: 'Grand Curseur',
+    lineHeightBtn: 'Hauteur de Ligne',
+    letterSpacingBtn: 'Espacement Lettres',
+    textAlignBtn: 'Alignement Texte',
+    fontFamilyBtn: 'Police',
+    tooltipBtn: 'Infobulles',
+    skipLink: 'Aller au Contenu',
+    skipNavigationBtn: 'Aller au Contenu',
+    focusIndicatorBtn: 'Indicateur de Focus',
+    largeCursorBtn: 'Grand Curseur',
+    languageHeader: 'Langue',
+    searchLanguage: 'Rechercher...',
+    previous: 'Précédent',
+    next: 'Suivant',
+    loading: 'Chargement...',
+    videoNotFound: 'Vidéo non trouvée',
+    audioDescriptionBtn: 'Audiodescription',
+    replay: 'Rejouer',
+    play: 'Lire',
+    pause: 'Pause',
+  },
+  es: {
+    langName: 'Español',
+    flag: '🇪🇸',
+    widgetTitle: 'HERRAMIENTAS DE ACCESIBILIDAD',
+    wcagFocus: 'WCAG 2.2-focused',
+    resetSettings: 'RESTABLECER',
+    close: 'Cerrar',
+    profilesHeader: 'Perfiles de Accesibilidad',
+    'seizure-safe': 'Seguro para Convulsiones',
+    'vision-impaired': 'Discapacidad Visual',
+    'adhd-friendly': 'Amigable TDAH',
+    'cognitive-disability': 'Discapacidad Cognitiva',
+    'motor-impaired': 'Discapacidad Motora',
+    dyslexia: 'Amigable Dislexia',
+    'color-blind': 'Daltonismo',
+    fontSizeBtn: 'Tamaño de Texto',
+    highContrastBtn: 'Contraste',
+    contrastDark: 'Contraste Oscuro',
+    contrastLight: 'Contraste Claro',
+    contrastWarm: 'Contraste Cálido',
+    contrastBlue: 'Contraste Azul',
+    monochromeBtn: 'Monocromo',
+    readingGuideBtn: 'Guía de Lectura',
+    pauseAnimationsBtn: 'Pausar Animaciones',
+    hideImagesBtn: 'Ocultar Imágenes',
+    highlightLinksBtn: 'Resaltar Enlaces',
+    highlightTitlesBtn: 'Resaltar Títulos',
+    cursorBtn: 'Cursor Grande',
+    lineHeightBtn: 'Altura de Línea',
+    letterSpacingBtn: 'Espaciado',
+    textAlignBtn: 'Alineación',
+    fontFamilyBtn: 'Fuente',
+    tooltipBtn: 'Tooltips',
+    skipLink: 'Saltar al Contenido',
+    skipNavigationBtn: 'Saltar al Contenido',
+    focusIndicatorBtn: 'Indicador de Foco',
+    largeCursorBtn: 'Cursor Grande',
+    languageHeader: 'Idioma',
+    searchLanguage: 'Buscar...',
+    previous: 'Anterior',
+    next: 'Siguiente',
+    loading: 'Cargando...',
+    videoNotFound: 'Video no encontrado',
+    audioDescriptionBtn: 'Audiodescripción',
+    replay: 'Repetir',
+    play: 'Reproducir',
+    pause: 'Pausa',
+  },
+  it: {
+    langName: 'Italiano',
+    flag: '🇮🇹',
+    widgetTitle: 'STRUMENTI DI ACCESSIBILITÀ',
+    wcagFocus: 'WCAG 2.2-focused',
+    resetSettings: 'RIPRISTINA',
+    close: 'Chiudi',
+    profilesHeader: 'Profili di Accessibilità',
+    'seizure-safe': 'Sicuro per Epilessia',
+    'vision-impaired': 'Ipovedenti',
+    'adhd-friendly': 'Amichevole ADHD',
+    'cognitive-disability': 'Disabilità Cognitiva',
+    'motor-impaired': 'Disabilità Motoria',
+    dyslexia: 'Amichevole Dislessia',
+    'color-blind': 'Daltonismo',
+    fontSizeBtn: 'Dimensione Testo',
+    highContrastBtn: 'Contrasto',
+    contrastDark: 'Contrasto Scuro',
+    contrastLight: 'Contrasto Chiaro',
+    contrastWarm: 'Contrasto Caldo',
+    contrastBlue: 'Contrasto Blu',
+    monochromeBtn: 'Monocromatico',
+    readingGuideBtn: 'Guida alla Lettura',
+    pauseAnimationsBtn: 'Pausa Animazioni',
+    hideImagesBtn: 'Nascondi Immagini',
+    highlightLinksBtn: 'Evidenzia Link',
+    highlightTitlesBtn: 'Evidenzia Titoli',
+    cursorBtn: 'Cursore Grande',
+    lineHeightBtn: 'Altezza Riga',
+    letterSpacingBtn: 'Spaziatura Lettere',
+    textAlignBtn: 'Allineamento',
+    fontFamilyBtn: 'Carattere',
+    tooltipBtn: 'Suggerimenti',
+    skipLink: 'Vai al Contenuto',
+    skipNavigationBtn: 'Vai al Contenuto',
+    focusIndicatorBtn: 'Indicatore Focus',
+    largeCursorBtn: 'Cursore Grande',
+    languageHeader: 'Lingua',
+    searchLanguage: 'Cerca...',
+    previous: 'Precedente',
+    next: 'Successivo',
+    loading: 'Caricamento...',
+    videoNotFound: 'Video non trovato',
+    audioDescriptionBtn: 'Audiodescrizione',
+    replay: 'Ripeti',
+    play: 'Riproduci',
+    pause: 'Pausa',
+  },
+  pt: {
+    langName: 'Português',
+    flag: '🇵🇹',
+    widgetTitle: 'FERRAMENTAS DE ACESSIBILIDADE',
+    wcagFocus: 'WCAG 2.2-focused',
+    resetSettings: 'REDEFINIR',
+    close: 'Fechar',
+    profilesHeader: 'Perfis de Acessibilidade',
+    'seizure-safe': 'Seguro para Convulsões',
+    'vision-impaired': 'Deficiência Visual',
+    'adhd-friendly': 'Amigável TDAH',
+    'cognitive-disability': 'Deficiência Cognitiva',
+    'motor-impaired': 'Deficiência Motora',
+    dyslexia: 'Amigável Dislexia',
+    'color-blind': 'Daltonismo',
+    fontSizeBtn: 'Tamanho do Texto',
+    highContrastBtn: 'Contraste',
+    contrastDark: 'Contraste Escuro',
+    contrastLight: 'Contraste Claro',
+    contrastWarm: 'Contraste Quente',
+    contrastBlue: 'Contraste Azul',
+    monochromeBtn: 'Monocromático',
+    readingGuideBtn: 'Guia de Leitura',
+    pauseAnimationsBtn: 'Pausar Animações',
+    hideImagesBtn: 'Ocultar Imagens',
+    highlightLinksBtn: 'Destacar Links',
+    highlightTitlesBtn: 'Destacar Títulos',
+    cursorBtn: 'Cursor Grande',
+    lineHeightBtn: 'Altura da Linha',
+    letterSpacingBtn: 'Espaçamento',
+    textAlignBtn: 'Alinhamento',
+    fontFamilyBtn: 'Fonte',
+    tooltipBtn: 'Dicas',
+    skipLink: 'Pular para Conteúdo',
+    skipNavigationBtn: 'Pular para Conteúdo',
+    focusIndicatorBtn: 'Indicador de Foco',
+    largeCursorBtn: 'Cursor Grande',
+    languageHeader: 'Idioma',
+    searchLanguage: 'Pesquisar...',
+    previous: 'Anterior',
+    next: 'Próxima',
+    loading: 'Carregando...',
+    videoNotFound: 'Vídeo não encontrado',
+    audioDescriptionBtn: 'Audiodescrição',
+    replay: 'Repetir',
+    play: 'Reproduzir',
+    pause: 'Pausa',
+  },
+  ru: {
+    langName: 'Русский',
+    flag: '🇷🇺',
+    widgetTitle: 'ИНСТРУМЕНТЫ ДОСТУПНОСТИ',
+    wcagFocus: 'WCAG 2.2-focused',
+    resetSettings: 'СБРОСИТЬ',
+    close: 'Закрыть',
+    profilesHeader: 'Профили Доступности',
+    'seizure-safe': 'Эпилепсия Безопасно',
+    'vision-impaired': 'Нарушение Зрения',
+    'adhd-friendly': 'СДВГ Дружелюбно',
+    'cognitive-disability': 'Когнитивные Нарушения',
+    'motor-impaired': 'Моторные Нарушения',
+    dyslexia: 'Дислексия Дружелюбно',
+    'color-blind': 'Дальтонизм',
+    fontSizeBtn: 'Размер Текста',
+    highContrastBtn: 'Контраст',
+    contrastDark: 'Тёмный Контраст',
+    contrastLight: 'Светлый Контраст',
+    contrastWarm: 'Тёплый Контраст',
+    contrastBlue: 'Синий Контраст',
+    monochromeBtn: 'Монохром',
+    readingGuideBtn: 'Гид по Чтению',
+    pauseAnimationsBtn: 'Пауза Анимации',
+    hideImagesBtn: 'Скрыть Изображения',
+    highlightLinksBtn: 'Выделить Ссылки',
+    highlightTitlesBtn: 'Выделить Заголовки',
+    cursorBtn: 'Большой Курсор',
+    lineHeightBtn: 'Высота Строки',
+    letterSpacingBtn: 'Интервал',
+    textAlignBtn: 'Выравнивание',
+    fontFamilyBtn: 'Шрифт',
+    tooltipBtn: 'Подсказки',
+    skipLink: 'К Содержимому',
+    skipNavigationBtn: 'К Содержимому',
+    focusIndicatorBtn: 'Индикатор Фокуса',
+    largeCursorBtn: 'Большой Курсор',
+    languageHeader: 'Язык',
+    searchLanguage: 'Поиск...',
+    previous: 'Назад',
+    next: 'Вперед',
+    loading: 'Загрузка...',
+    videoNotFound: 'Видео не найдено',
+    audioDescriptionBtn: 'Аудиодескрипция',
+    replay: 'Повторить',
+    play: 'Воспроизвести',
+    pause: 'Пауза',
+  },
+  ja: {
+    langName: '日本語',
+    flag: '🇯🇵',
+    widgetTitle: 'アクセシビリティツール',
+    wcagFocus: 'WCAG 2.2-focused',
+    resetSettings: '設定をリセット',
+    close: '閉じる',
+    profilesHeader: 'アクセシビリティプロファイル',
+    'seizure-safe': '発作防止',
+    'vision-impaired': '視覚障害者',
+    'adhd-friendly': 'ADHD フレンドリー',
+    'cognitive-disability': '認知障害',
+    'motor-impaired': '運動障害',
+    dyslexia: '失読症フレンドリー',
+    'color-blind': '色覚異常',
+    fontSizeBtn: '文字サイズ',
+    highContrastBtn: 'コントラスト',
+    contrastDark: 'ダーク',
+    contrastLight: 'ライト',
+    contrastWarm: 'ウォーム',
+    contrastBlue: 'ブルー',
+    monochromeBtn: 'モノクロ',
+    readingGuideBtn: '読書ガイド',
+    pauseAnimationsBtn: 'アニメーション停止',
+    hideImagesBtn: '画像を隠す',
+    highlightLinksBtn: 'リンクを強調',
+    highlightTitlesBtn: 'タイトルを強調',
+    cursorBtn: '大きなカーソル',
+    lineHeightBtn: '行の高さ',
+    letterSpacingBtn: '文字間隔',
+    textAlignBtn: 'テキスト配置',
+    fontFamilyBtn: 'フォント',
+    tooltipBtn: 'ツールチップ',
+    skipLink: 'コンテンツへ移動',
+    skipNavigationBtn: 'コンテンツへ移動',
+    focusIndicatorBtn: 'フォーカス表示',
+    largeCursorBtn: '大きなカーソル',
+    languageHeader: '言語',
+    searchLanguage: '検索...',
+    previous: '前へ',
+    next: '次へ',
+    loading: '読み込み中...',
+    videoNotFound: 'ビデオが見つかりません',
+    audioDescriptionBtn: '音声ガイド',
+    replay: 'リプレイ',
+    play: '再生',
+    pause: '一時停止',
+  },
+  zh: {
+    langName: '简体中文',
+    flag: '🇨🇳',
+    widgetTitle: '无障碍工具',
+    wcagFocus: 'WCAG 2.2-focused',
+    resetSettings: '重置设置',
+    close: '关闭',
+    profilesHeader: '无障碍配置文件',
+    'seizure-safe': '癫痫安全',
+    'vision-impaired': '视力障碍',
+    'adhd-friendly': '多动症友好',
+    'cognitive-disability': '认知障碍',
+    'motor-impaired': '运动障碍',
+    dyslexia: '诵读困难友好',
+    'color-blind': '色盲',
+    fontSizeBtn: '字体大小',
+    highContrastBtn: '高对比度',
+    contrastDark: '暗色对比',
+    contrastLight: '亮色对比',
+    contrastWarm: '暖色对比',
+    contrastBlue: '蓝色对比',
+    monochromeBtn: '单色',
+    readingGuideBtn: '阅读指南',
+    pauseAnimationsBtn: '暂停动画',
+    hideImagesBtn: '隐藏图片',
+    highlightLinksBtn: '高亮链接',
+    highlightTitlesBtn: '高亮标题',
+    cursorBtn: '大光标',
+    lineHeightBtn: '行高',
+    letterSpacingBtn: '字间距',
+    textAlignBtn: '文本对齐',
+    fontFamilyBtn: '字体',
+    tooltipBtn: '工具提示',
+    skipLink: '跳转到内容',
+    skipNavigationBtn: '跳转到内容',
+    focusIndicatorBtn: '焦点指示',
+    largeCursorBtn: '大光标',
+    languageHeader: '语言',
+    searchLanguage: '搜索...',
+    previous: '上一个',
+    next: '下一个',
+    loading: '加载中...',
+    videoNotFound: '未找到视频',
+    audioDescriptionBtn: '语音描述',
+    replay: '重播',
+    play: '播放',
+    pause: '暂停',
+  },
+  ar: {
+    langName: 'العربية',
+    flag: '🇸🇦',
+    widgetTitle: 'أدوات الوصول',
+    wcagFocus: 'WCAG 2.2-focused',
+    resetSettings: 'إعادة تعيين الإعدادات',
+    close: 'إغلاق',
+    profilesHeader: 'ملفات تعريف الوصول',
+    'seizure-safe': 'آمن للصرع',
+    'vision-impaired': 'ضعاف البصر',
+    'adhd-friendly': 'صديق لفرط الحركة',
+    'cognitive-disability': 'إعاقة معرفية',
+    'motor-impaired': 'إعاقة حركية',
+    dyslexia: 'صديق لعسر القراءة',
+    'color-blind': 'عمى الألوان',
+    fontSizeBtn: 'حجم النص',
+    highContrastBtn: 'التباين',
+    contrastDark: 'تباين داكن',
+    contrastLight: 'تباين فاتح',
+    contrastWarm: 'تباين دافئ',
+    contrastBlue: 'تباين أزرق',
+    monochromeBtn: 'أحادية اللون',
+    readingGuideBtn: 'دليل القراءة',
+    pauseAnimationsBtn: 'إيقاف الرسوم المتحركة',
+    hideImagesBtn: 'إخفاء الصور',
+    highlightLinksBtn: 'تمييز الروابط',
+    highlightTitlesBtn: 'تمييز العناوين',
+    cursorBtn: 'مؤشر كبير',
+    lineHeightBtn: 'ارتفاع الخط',
+    letterSpacingBtn: 'تباعد الأحرف',
+    textAlignBtn: 'محاذاة النص',
+    fontFamilyBtn: 'نوع الخط',
+    tooltipBtn: 'تلميحات',
+    skipLink: 'تخطي إلى المحتوى',
+    skipNavigationBtn: 'تخطي إلى المحتوى',
+    focusIndicatorBtn: 'مؤشر التركيز',
+    largeCursorBtn: 'مؤشر كبير',
+    languageHeader: 'لغة',
+    searchLanguage: 'بحث...',
+    previous: 'سابق',
+    next: 'التالي',
+    loading: 'جار التحميل...',
+    videoNotFound: 'الفيديو غير موجود',
+    audioDescriptionBtn: 'الوصف الصوتي',
+    replay: 'إعادة',
+    play: 'تشغيل',
+    pause: 'إيقاف مؤقت',
+  },
+}
+
+// Varsayılan Dil
+let CURRENT_LANG = 'tr'
+
+/**
+ * Çeviri fonksiyonu
+ * @param {string} key - Çeviri anahtarı
+ * @returns {string} Çevrilmiş metin veya key
+ */
+function t(key) {
+  return TRANSLATIONS[CURRENT_LANG][key] || key
+}
+
+/**
+ * Dili değiştirir
+ */
+function setLanguage(lang, root) {
+  if (!TRANSLATIONS[lang]) return
+  CURRENT_LANG = lang
+  localStorage.setItem('a11y-lang', lang)
+
+  // RTL Support
+  const host = root.host ? root.host.shadowRoot : root
+  const panel = host.getElementById('a11y-widget-panel')
+  if (panel) {
+    if (lang === 'ar') {
+      panel.setAttribute('dir', 'rtl')
+      panel.classList.add('a11y-rtl')
+    } else {
+      panel.setAttribute('dir', 'ltr')
+      panel.classList.remove('a11y-rtl')
+    }
+  }
+
+  updateAllTexts(root)
+}
+
+/**
+ * UI'daki tüm metinleri günceller
+ */
+function updateAllTexts(root) {
+  const host = root.host ? root.host.shadowRoot : root
+
+  // 1. Statik metinler (data-i18n attribute'u olanlar)
+  host.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n')
+    el.innerText = t(key)
+  })
+
+  // 2. Statik ID'li elemanlar (widget.html içindekiler)
+  const idMap = {
+    'a11y-title': 'widgetTitle',
+    'a11y-reset-btn': 'resetSettings',
+  }
+
+  Object.keys(idMap).forEach(id => {
+    const el = host.getElementById(id)
+    if (el) el.innerText = t(idMap[id])
+  })
+
+  // 3. Buton metinleri
+  host.querySelectorAll('.brutalist-button').forEach(btn => {
+    const textSpan = btn.querySelector('.button-text span')
+    if (textSpan) {
+      const translation = t(btn.id)
+      if (translation !== btn.id) {
+        textSpan.innerText = translation
+      }
+    }
+  })
+
+  // 4. Profil metinleri
+  if (typeof updateProfileTexts === 'function') {
+    updateProfileTexts(host)
+  }
+
+  // 5. Dil seçiciyi güncelle (Varsa)
+  if (typeof window.updateLanguageSelectorUI === 'function') {
+    window.updateLanguageSelectorUI()
+  }
+
+  // 6. Skip Link metnini güncelle (Varsa)
+  if (typeof window.updateSkipLinkText === 'function') {
+    window.updateSkipLinkText()
+  }
+
+  // 7. Audio Description Player Update
+  if (typeof window.updateAudioDescriptionTexts === 'function') {
+    window.updateAudioDescriptionTexts()
+  }
+}
+
+/**
+ * Başlangıç dilini ayarlar
+ */
+function initLanguage(root) {
+  const saved = localStorage.getItem('a11y-lang')
+  if (saved && TRANSLATIONS[saved]) {
+    CURRENT_LANG = saved
+  } else {
+    // Auto-detect from browser
+    const browserLang = navigator.language.split('-')[0] // 'en-US' -> 'en'
+    if (TRANSLATIONS[browserLang]) {
+      CURRENT_LANG = browserLang
+    } else {
+      CURRENT_LANG = 'tr' // Default fallback
+    }
+  }
+}
+
+// Global'e aç
+window.a11yI18n = {
+  t,
+  setLanguage,
+  initLanguage,
+  getCurrentLang: () => CURRENT_LANG,
+  getLanguages: () =>
+    Object.keys(TRANSLATIONS).map(key => ({
+      code: key,
+      name: TRANSLATIONS[key].langName || key.toUpperCase(),
+      flag: TRANSLATIONS[key].flag || '🌐',
+    })),
+}

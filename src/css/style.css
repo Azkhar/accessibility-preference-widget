@@ -1,0 +1,1009 @@
+:root,
+html,
+body {
+  --a11y-primary: rgb(20, 184, 166);
+  --a11y-primary-hover: rgb(13, 148, 136);
+  --a11y-font-family:
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+#a11y-widget-panel,
+#a11y-widget-trigger,
+.a11y-widget-container {
+  /* Eğer bir dış sarmalayıcı (container) kullanıyorsanız */
+  /* Cam yeşili renk paleti */
+  --glass-primary: rgba(72, 187, 120, 0.85);
+  --glass-secondary: rgba(56, 161, 105, 0.9);
+  --glass-dark: rgba(30, 100, 60, 0.9);
+  --glass-light: rgba(255, 255, 255, 0.2);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-shadow: rgba(30, 100, 60, 0.3);
+  --text-light: rgba(255, 255, 255, 0.95);
+  --glass-card: rgba(255, 255, 255, 0.15);
+  --glass-card-hover: rgba(255, 255, 255, 0.25);
+  --glass-card-active: rgba(255, 255, 255, 0.3);
+
+  /* Yeşil/Teal bazlı değişkenler */
+  --a11y-primary: rgb(20, 184, 166);
+  --a11y-primary-hover: rgb(13, 148, 136);
+  --a11y-primary-soft: rgba(20, 184, 166, 0.15);
+  --a11y-text-main: rgb(19, 56, 73);
+  --a11y-text-muted: rgb(129, 158, 171);
+  --a11y-font-family:
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+#a11y-widget-trigger,
+#a11y-widget-panel,
+#a11y-widget-panel *,
+.a11y-header,
+.a11y-content,
+.a11y-footer,
+.a11y-grid,
+.a11y-card,
+.a11y-card-title,
+.a11y-reset,
+.brutalist-button {
+  font-family: var(--a11y-font-family) !important;
+}
+
+/* Widget container'ı ve tüm child elementleri için */
+#a11y-widget-trigger,
+#a11y-widget-panel,
+#a11y-widget-panel *:not(script):not(style) {
+  font-family: var(--a11y-font-family) !important;
+}
+
+div:has(> #a11y-widget-trigger) {
+  font-family: var(--a11y-font-family) !important;
+}
+
+div:has(> #a11y-widget-trigger) * {
+  font-family: var(--a11y-font-family) !important;
+}
+
+/* Header için */
+.a11y-header,
+.a11y-header * {
+  font-family: var(--a11y-font-family) !important;
+}
+
+/* Footer için */
+.a11y-footer,
+.a11y-footer * {
+  font-family: var(--a11y-font-family) !important;
+}
+
+/* Butonlar için */
+.brutalist-button,
+.brutalist-button .button-text,
+.brutalist-button .button-text span {
+  font-family: var(--a11y-font-family) !important;
+}
+
+/* Kart içerikleri için */
+.a11y-card,
+.a11y-card * {
+  font-family: var(--a11y-font-family) !important;
+}
+
+* {
+  box-sizing: border-box;
+  font-family:
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body {
+  background-color: #ffffff;
+  font-family:
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* #a11y-widget-trigger {
+  border: 2px solid var(--glass-border);
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(
+    135deg,
+    var(--glass-primary) 0%,
+    var(--glass-secondary) 100%
+  );
+  backdrop-filter: blur(30px);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(20, 184, 166, 0.4);
+  z-index: 999998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#a11y-widget-trigger:hover {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 15px 35px rgba(20, 184, 166, 0.6);
+}
+
+#a11y-widget-trigger svg {
+  width: 32px;
+  height: 32px;
+  fill: var(--text-light);
+} */
+
+/* Tetikleyici Buton - Premium Glass Effect */
+#a11y-widget-trigger {
+  /* Konumlandırma */
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 56px; /* Biraz daha büyük ve iddialı */
+  height: 56px;
+  z-index: 999998;
+
+  /* Flex Ortalama */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* --- GLASS GÖRÜNÜMÜ --- */
+
+  /* Arka Plan: Yarı saydam canlı teal gradyanı */
+  background: linear-gradient(
+    135deg,
+    rgba(37, 76, 72, 0.74) 0%,
+    rgba(14, 183, 168, 0.81) 100%
+  );
+
+  /* Bulanıklık Efekti (Arkasından geçen içeriği flulaştırır) */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  /* Kenarlık: Üst sol köşeden ışık vuruyormuş gibi beyaz parlama */
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+
+  /* Gölgeler: Hem derinlik hem de renkli 'glow' efekti */
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15),
+    /* Genel derinlik gölgesi */ 0 4px 15px rgba(20, 184, 166, 0.4),
+    /* Renkli parlama (Glow) */ inset 0 0 0 1px rgba(255, 255, 255, 0.15); /* İçten ince bir cam hattı */
+
+  /* Etkileşim */
+  cursor: pointer;
+  /* Bouncy (yaylanan) bir geçiş efekti */
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Hover (Üzerine Gelince) */
+#a11y-widget-trigger:hover {
+  /* Biraz büyüsün ve dönsün */
+  transform: scale(1.1) rotate(15deg);
+
+  /* Rengi biraz daha opaklaşsın */
+  background: linear-gradient(
+    135deg,
+    rgba(37, 76, 72, 0.85) 0%,
+    rgba(14, 183, 168, 0.9) 100%
+  );
+
+  /* Glow efekti güçlensin */
+  box-shadow: 0 15px 35px rgba(20, 184, 166, 0.5),
+    0 0 0 4px rgba(255, 255, 255, 0.2); /* Dışına ikinci bir halka (ring) */
+}
+
+/* İkon Rengi */
+#a11y-widget-trigger svg {
+  width: 28px;
+  height: 28px;
+  fill: #ffffff;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2)); /* İkona da hafif gölge */
+  transition: transform 0.4s ease;
+}
+
+#a11y-widget-trigger:hover svg {
+  transform: scale(1.1);
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(20, 184, 166, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(20, 184, 166, 0);
+  }
+}
+
+#a11y-widget-trigger {
+  animation: pulse-glow 3s infinite;
+}
+
+/* Ana panel - Geliştirilmiş glass morphism */
+#a11y-widget-panel {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%) translateX(120%);
+  width: 520px;
+  /* max-width: 98vw; */
+  max-height: 100%;
+  height: 100%;
+  /* background: rgba(245, 247, 250, 0.7); */
+  /* backdrop-filter: blur(100px);
+  -webkit-backdrop-filter: blur(100px); */
+  border-top-left-radius: 24px;
+  /* border-bottom-left-radius: 16px; */
+  /* box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); */
+  /* box-shadow: 0 22px 110px rgba(180, 191, 208, 0.56); */
+  z-index: 999999;
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  display: flex;
+  /* border: 1px solid rgba(245, 247, 250, 0.2); */
+  flex-direction: column;
+
+  background: rgba(245, 247, 250, 0.7);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  /* ince saydam sınır (glass look) */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  /* hafif gölge ile yükselti */
+  box-shadow: 0 12px 30px rgba(10, 20, 30, 0.2);
+}
+/* isteğe bağlı: üstte hafif renk tonu (teal tint) */
+#a11y-widget-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(13, 120, 110, 0.03),
+    rgba(13, 120, 110, 0.05)
+  );
+}
+
+#a11y-widget-panel.open {
+  transform: translateY(-50%) translateX(0);
+  opacity: 1;
+}
+
+/* Header - Geliştirilmiş */
+.a11y-header {
+  padding: 24px;
+  /* background: rgba(245, 247, 250, 0.15); */
+  /* border-bottom: 1px solid rgba(0, 0, 0, 0.05); */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.a11y-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--a11y-text-main);
+  letter-spacing: -0.5px;
+  font-family: var(--a11y-font-family) !important;
+}
+
+.a11y-header small {
+  display: block;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--a11y-text-main);
+  margin-top: 2px;
+  font-family: var(--a11y-font-family) !important;
+}
+
+.a11y-close {
+  background-color: rgba(255, 255, 255, 0.65);
+  border: 2px solid transparent;
+  color: var(--a11y-text-main);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.a11y-close:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: var(--a11y-primary);
+  color: var(--a11y-primary);
+  box-shadow: 0 0 0 3px rgb(from var(--a11y-primary) r g b / 0.25);
+}
+
+.a11y-close svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.a11y-content {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+  /* background: rgba(255, 255, 255, 0.1); */
+  /* backdrop-filter: blur(15px); */
+}
+
+.a11y-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.a11y-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.a11y-content::-webkit-scrollbar-thumb {
+  background-color: rgba(20, 184, 166, 0.4);
+  border-radius: 10px;
+}
+
+.a11y-content::-webkit-scrollbar-thumb:hover {
+  background-color: var(--a11y-primary);
+}
+
+/* Kategori etiketleri - Geliştirilmiş */
+.a11y-category {
+  margin-bottom: 24px;
+}
+
+.category-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--a11y-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 12px;
+  padding-left: 4px;
+  opacity: 0.8;
+}
+
+.a11y-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.a11y-grid-secondary {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+/* BUTON KONTEYNIRI - Geliştirilmiş Tik İşareti için */
+.button-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Geliştirilmiş Brutalist Butonlar */
+.brutalist-button {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  min-height: 110px;
+  height: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+  /* background: rgba(255, 255, 255, 0.6); */
+  /* border: 1px solid rgba(255, 255, 255, 0.6); */
+  /* border: 1px solid rgba(20, 184, 166, 0.4); */
+  border: 2px solid transparent;
+  border-radius: 16px;
+  /* box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--a11y-text-main);
+  text-decoration: none;
+  position: relative;
+  /* backdrop-filter: blur(10px); */
+
+  background-color: rgba(255, 255, 255, 0.65);
+  /* border: 1px solid rgba(255, 255, 255, 0.4); */
+}
+
+.brutalist-button:hover {
+  /* transform: translateY(-3px); */
+  /* background: rgba(255, 255, 255, 0.8); */
+  /* box-shadow: 0 8px 15px rgba(20, 184, 166, 0.1); */
+  border-color: var(--a11y-primary);
+}
+
+.brutalist-button.active {
+  /* background: var(--a11y-primary-soft); */
+  border: 2px solid var(--a11y-primary);
+  box-shadow: 0 0 0 5px rgb(from var(--a11y-primary) r g b / 0.25);
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* İkon Stilleri */
+.feature-icon {
+  margin-bottom: 10px;
+  color: var(--a11y-text-muted);
+  transition: 0.2s;
+}
+
+.feature-icon svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
+}
+
+.brutalist-button.active .feature-icon {
+  color: var(--a11y-primary);
+  transform: scale(1.1);
+}
+
+/* Metin Stilleri */
+.button-text {
+  line-height: 1.2;
+}
+
+.button-text span {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--a11y-text-main);
+}
+
+.brutalist-button.active .button-text span {
+  font-weight: 700;
+  color: var(--a11y-primary);
+}
+
+/* YENİ: Geliştirilmiş Tik İşareti - Kullanıcının beğendiği stilde */
+.a11y-card-check {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  background: var(--a11y-primary);
+  color: white;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Buton aktifse check göster */
+.button-container:has(.brutalist-button.active) .a11y-card-check,
+.button-container.active .a11y-card-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Progress bars - Geliştirilmiş */
+.progress-bars {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+  width: 70%;
+  justify-content: center;
+}
+
+.bar {
+  flex: 1;
+  height: 4px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  transition: 0.3s;
+}
+
+.bar.active {
+  background-color: var(--a11y-primary);
+}
+
+.a11y-footer {
+  padding: 24px;
+}
+
+/* Reset butonu - Geliştirilmiş */
+.a11y-reset {
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  color: var(--a11y-text-main);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 0.65);
+}
+
+.a11y-reset:hover {
+  border: 2px solid var(--a11y-primary);
+  color: var(--a11y-primary);
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 0 5px rgb(from var(--a11y-primary) r g b / 0.25);
+}
+
+/* Eski kart stilleri (backward compatibility için) */
+.a11y-card {
+  background: rgba(255, 255, 255, 0.5);
+  /* backdrop-filter: blur(15px); */
+  border-radius: 16px;
+  padding: 12px 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 110px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.a11y-card:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 15px rgba(20, 184, 166, 0.1);
+  border-color: var(--a11y-primary);
+}
+
+.a11y-card.active {
+  background: var(--a11y-primary-soft);
+  border: 2px solid var(--a11y-primary);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5) inset;
+}
+
+.a11y-card-icon {
+  width: 32px;
+  height: 32px;
+  /* margin-bottom: 12px; */
+  fill: var(--a11y-text-muted);
+  transition: fill 0.2s ease;
+}
+
+.a11y-card.active .a11y-card-icon {
+  fill: var(--a11y-primary);
+}
+
+.a11y-card-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--a11y-text-main);
+  margin: 0;
+  font-family:
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+
+.a11y-card.active .a11y-card-title {
+  font-weight: 700;
+  color: var(--a11y-primary);
+}
+
+/* Eski check işareti (backward compatibility) */
+.a11y-card-check.legacy {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  background: var(--a11y-primary);
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.a11y-card.active .a11y-card-check.legacy {
+  display: flex;
+}
+
+/* Accessibility Features */
+body.a11y-high-contrast {
+  background: #000 !important;
+  color: #fff !important;
+}
+
+body.a11y-high-contrast * {
+  background-color: #000 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+/* Yüksek Kontrast Modları */
+body.a11y-contrast-invert {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Widget'ı invert'ten koru */
+body.a11y-contrast-invert #a11y-widget-trigger,
+body.a11y-contrast-invert #a11y-widget-panel,
+body.a11y-contrast-invert #a11y-widget-panel * {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+body.a11y-contrast-dark {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+body.a11y-contrast-dark
+  *:not(script):not(style):not(#a11y-widget-trigger):not(
+    #a11y-widget-panel
+  ):not(#a11y-widget-panel *) {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+body.a11y-contrast-warm {
+  background: #2a0f0f !important;
+  color: #ffeedd !important;
+}
+
+body.a11y-contrast-warm
+  *:not(script):not(style):not(#a11y-widget-trigger):not(
+    #a11y-widget-panel
+  ):not(#a11y-widget-panel *) {
+  background-color: #2a0f0f !important;
+  color: #ffeedd !important;
+  border-color: #ff9966 !important;
+}
+
+body.a11y-contrast-light {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+body.a11y-contrast-light
+  *:not(script):not(style):not(#a11y-widget-trigger):not(
+    #a11y-widget-panel
+  ):not(#a11y-widget-panel *) {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+body.a11y-contrast-blue {
+  background: #000033 !important;
+  color: #ffff00 !important;
+}
+
+body.a11y-contrast-blue
+  *:not(script):not(style):not(#a11y-widget-trigger):not(
+    #a11y-widget-panel
+  ):not(#a11y-widget-panel *) {
+  background-color: #000033 !important;
+  color: #ffff00 !important;
+  border-color: #00ffff !important;
+}
+
+/* Kontrast modları için ortak kurallar */
+body[class*='a11y-contrast-'] a {
+  text-decoration: underline !important;
+}
+
+body[class*='a11y-contrast-'] button {
+  font-weight: bold !important;
+}
+
+body[class*='a11y-contrast-'] input,
+body[class*='a11y-contrast-'] select,
+body[class*='a11y-contrast-'] textarea {
+  border-width: 2px !important;
+}
+
+body.a11y-pause-animations * {
+  animation-play-state: paused !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+body.a11y-highlight-links a {
+  background: #ffeb3b !important;
+  color: #000 !important;
+  text-decoration: underline !important;
+  padding: 2px 4px;
+  border-radius: 2px;
+}
+
+body.a11y-large-cursor,
+body.a11y-large-cursor * {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path d="M4 4 L4 24 L10 18 L14 28 L18 26 L14 16 L20 16 Z" fill="black" stroke="white" stroke-width="2"/></svg>')
+      0 0,
+    auto !important;
+}
+
+@media (max-width: 521px) {
+  #a11y-widget-panel {
+    width: 100%;
+    transform: translateY(-50%) translateX(0) scale(0.9);
+    opacity: 0;
+    pointer-events: none;
+    border-radius: 0;
+  }
+
+  #a11y-widget-panel.open {
+    transform: translateY(-50%) translateX(0) scale(1);
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .a11y-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .a11y-grid-secondary {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .a11y-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .a11y-grid-secondary {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* === PROFILES SECTION STYLES (GRID DESIGN) === */
+.a11y-profiles-wrapper {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.a11y-profiles-header {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--a11y-text-main);
+  margin-bottom: 12px;
+  padding-left: 4px;
+  font-family: var(--a11y-font-family) !important;
+}
+
+.a11y-profiles-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 5px 5px 10px 5px;
+}
+
+/* Brutalist Profile Card & Lang Button Styles (Mimic .brutalist-button) */
+.a11y-profile-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Inner gap */
+  padding: 10px 12px;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--a11y-text-main);
+  text-align: center;
+  position: relative;
+  width: 100%;
+  flex-direction: row; /* Profiles horizontal again */
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.a11y-lang-btn {
+  justify-content: flex-start; /* Lang buttons left aligned */
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Inner gap */
+  padding: 4px 16px;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--a11y-text-main);
+  text-align: center;
+  position: relative;
+  width: 100%;
+}
+
+/* Hover State */
+.a11y-profile-card:hover,
+.a11y-lang-btn:hover {
+  border-color: var(--a11y-primary);
+}
+
+/* Active State */
+.a11y-profile-card.active,
+.a11y-lang-btn.active {
+  border: 2px solid var(--a11y-primary);
+  box-shadow: 0 0 0 5px rgb(from var(--a11y-primary) r g b / 0.25);
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Inner icon styles */
+.a11y-profile-icon,
+.a11y-lang-flag {
+  color: var(--a11y-text-muted);
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.a11y-lang-flag {
+  margin-bottom: 0; /* Lang flag is side-by-side */
+  font-size: 32px; /* Bigger flags */
+}
+
+.a11y-profile-icon svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
+}
+
+.a11y-profile-card.active .a11y-profile-icon {
+  color: var(--a11y-primary);
+  transform: scale(1.1);
+}
+
+/* Inner Text Styles (Mimic .button-text) */
+.a11y-profile-title,
+.a11y-lang-name {
+  line-height: 1.2;
+}
+
+.a11y-profile-title span,
+.a11y-lang-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--a11y-text-main);
+}
+
+.a11y-profile-card.active .a11y-profile-title span,
+.a11y-lang-btn.active .a11y-lang-name {
+  color: var(--a11y-primary);
+}
+
+/* Check Icon for Profiles (Mimic .a11y-card-check) */
+.a11y-profile-check {
+  display: none; /* User didn't ask for check, just style mathcing. But brutalist has check. */
+}
+
+/* Language Selector Module Structure */
+.a11y-lang-selector-root {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1); /* Subtle divider */
+  margin-bottom: 12px;
+}
+
+.a11y-lang-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-left: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--a11y-text-main);
+}
+
+.a11y-lang-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.a11y-lang-search {
+  padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: transparent; /* backdrop filter from panel */
+}
+
+.a11y-lang-search input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  font-family: inherit;
+  font-weight: 500;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.a11y-lang-search input:focus {
+  border-color: var(--a11y-primary);
+  background: #fff;
+  outline-color: var(--a11y-primary);
+}
+
+.a11y-lang-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 5px 5px 10px 5px;
+  max-height: 300px; /* Taller */
+  overflow-y: auto;
+}
+
+/* Scrollbar for grid */
+.a11y-lang-grid::-webkit-scrollbar {
+  width: 6px;
+}
+.a11y-lang-grid::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+/* Responsive adjustment for profiles */
+@media (max-width: 480px) {
+  .a11y-lang-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+#a11y-widget-panel[hidden] {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #a11y-widget-trigger,
+  #a11y-widget-trigger::before,
+  #a11y-widget-trigger svg,
+  #a11y-widget-panel,
+  #a11y-widget-panel *,
+  .brutalist-button,
+  .feature-icon,
+  .a11y-profile-card,
+  .a11y-lang-btn {
+    animation: none !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

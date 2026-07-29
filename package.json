@@ -1,0 +1,37 @@
+{
+  "name": "accessibility-preference-widget",
+  "version": "1.0.0",
+  "description": "WCAG 2.2-focused accessibility preference widget",
+  "main": "dist/widget.js",
+  "browser": "dist/widget.min.js",
+  "files": [
+    "dist",
+    "licenses",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "scripts": {
+    "build": "node scripts/build.js",
+    "test": "npm run build && node --test",
+    "prepublishOnly": "npm test"
+  },
+  "keywords": [
+    "accessibility",
+    "accessibility-preferences",
+    "accessibility-widget",
+    "a11y",
+    "wcag",
+    "wcag22",
+    "javascript",
+    "shadow-dom",
+    "localstorage"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1"
+  }
+}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accessibility Preference Widget source template</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!--? WIDGETSTART ?-->
+
+    <div>
+      <button
+        type="button"
+        id="a11y-widget-trigger"
+        aria-label="Open accessibility preferences"
+        aria-expanded="false"
+        aria-controls="a11y-widget-panel"
+        title="Erişilebilirlik Menüsü"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2M21 9H15V22H13V16H11V22H9V9H3V7H21V9Z"
+          />
+        </svg>
+      </button>
+      <div
+        id="a11y-widget-panel"
+        role="dialog"
+        aria-labelledby="a11y-title"
+        aria-describedby="a11y-scope-note"
+        aria-modal="true"
+        hidden
+        inert
+      >
+        <div class="a11y-header">
+          <div>
+            <h2 id="a11y-title">ERİŞİLEBİLİRLİK ARAÇLARI</h2>
+            <small id="a11y-scope-note" data-i18n="wcagFocus"
+              >WCAG 2.2-focused</small
+            >
+          </div>
+          <button type="button" class="a11y-close" aria-label="Kapat">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div class="a11y-content">
+          <div id="a11y-profiles-root">
+          </div>
+
+          <div class="a11y-category">
+            <div class="a11y-grid" id="a11y-widget-panel-buttons">
+            </div>
+          </div>
+
+          <div class="a11y-category">
+            <div class="a11y-grid a11y-grid-secondary">
+            </div>
+          </div>
+        </div>
+
+        <div class="a11y-footer">
+          <button type="button" class="a11y-reset" id="a11y-reset-btn">
+            AYARLARI SIFIRLA
+          </button>
+        </div>
+      </div>
+    </div>
+    <!--? WIDGETEND ?-->
+  </body>
+</html>
