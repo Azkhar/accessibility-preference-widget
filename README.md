@@ -4,6 +4,10 @@ A dependency-free, WCAG 2.2-focused accessibility preference widget for static s
 
 > This widget does not by itself make a website WCAG-conformant. Site-wide design, content, code, and assistive-technology testing are still required.
 
+## Live Demo
+
+[Open the Accessibility Preference Widget demo](https://azkhar.github.io/accessibility-preference-widget/)
+
 ## Features
 
 - One-script, keyless integration with no application-level network requests
