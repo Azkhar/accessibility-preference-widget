@@ -63,7 +63,7 @@
     "node": ">=18"
   },
   "devDependencies": {
-    "esbuild": "^0.28.1",
+    "esbuild": "^0.28.2",
     "jsdom": "^26.1.0"
   }
 }
